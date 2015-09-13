@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-from twistar.dbobject import DBObject
-from twistar.registry import Registry
+import sqlalchemy
 
-class Subscriber(DBObject):
+class Subscriber():
     id = []
     reddit_username = []
     rsi_username = []
@@ -13,7 +12,7 @@ class Subscriber(DBObject):
     is_monocle = 0
     HASONE = ['flair']
 
-class Flair(DBObject):
+class Flair():
     id = []
     css_class = ""
     text = ""
