@@ -1,4 +1,3 @@
-"""
     ===Notes===
 
     There are a few ways already where I can abstract out some things, I am looking forward to a second pass once
@@ -22,4 +21,3 @@
             Error handling can be done by overridden exceptions using sys.excepthook
             Logging can be done using the setHandler method
             Watch this space!!!
-"""
