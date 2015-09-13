@@ -24,11 +24,11 @@ def main():
     )
 
     error_count = 0
+
+    rsi_subscribers = RSIsubscribers('dopscsstesting')
+    rsi_subscribers.connect()
     while True:
         try:
-            rsi_subscribers = RSIsubscribers('dopscsstesting')
-            rsi_subscribers.connect()
-
             """ Handle subscriber messages """
             sbuscriber_messages = rsi_subscribers.get_messages('Subscriber')
             if sbuscriber_messages:

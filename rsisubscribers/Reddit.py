@@ -8,23 +8,25 @@ Class to be used when accessing reddit and processing messages
 :license: MIT
 """
 import praw
-from rsisubscribers.Subscribers import Subscribers
-from rsisubscribers.DataManager import Subscriber, Flair
-from twistar.registry import Registry
+from rsisubscribers.SubscribersAPI import SubscribersAPI
+from rsisubscribers.DataManager import SubscriberModel, FlairModel
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 """ Need to abstract this away to a config manager """
-DB_USER = ""
-DB_PASS = ""
+DB_USER = "root"
+DB_PASS = "rawjj3i"
+DB_HOST = "127.0.0.1"
 DB_NAME = "rsi_subscribers"
 
-Registry.DBPOOL = adbapi.ConnectionPool('MySQLdb', user=DB_USER, passwd=DB_PASS, db=DB_NAME)
-Date = Registry.getDBAPIClass("Date")
+Session = sessionmaker()
+
 
 class RSIsubscribers:
     r = []
     data_manager = []
 
-    def __init__(self, subreddit_name):
+    def __init__(self, subreddit_name, dsn="mysql+mysqldb://{}:{}@{}/{}".format(DB_USER, DB_PASS, DB_HOST, DB_NAME)):
         """
             Initialise
             :param subreddit_name:
@@ -32,7 +34,8 @@ class RSIsubscribers:
         """
         self.r = praw.Reddit('RSIsubscribers test')
         self.subreddit_name = subreddit_name
-        self.data_manager = DataManager()
+        self.db_engine = create_engine(dsn)
+        self.db_session = Session(bind=self.db_engine)
 
     def connect(self):
         """
@@ -59,36 +62,36 @@ class RSIsubscribers:
 
         """ Get the two basic flairs from db """
         subscriber_flair = FlairChoice(
-            Flair().find(1),
-            Flair().find(2)
+            self.db_session.query(FlairModel).get(1),
+            self.db_session.query(FlairModel).get(2)
         )
 
         for message in messages:
-            subscribers = Subscribers()
+            subscribers = SubscribersAPI()
             is_subscriber = subscribers.is_subscriber(message.body)
             self.update_flair(message.author, subscriber_flair, is_subscriber)
 
-            """ todo THIS NEEDS WORK """
-            subscriber = Subscriber.findBy(where=['reddit_username=' + message.author], limit=1)
-            print(subscriber)
+            subscriber = self.db_session.query(SubscriberModel).filter(SubscriberModel.reddit_username == message.author).first()
+
             if not subscriber:
-                subscriber = Subscriber()
+                subscriber = SubscriberModel()
 
             subscriber.reddit_username = message.author
             subscriber.rsi_username = message.body
             subscriber.is_monocle = 0
-            subscriber.months = 1
-            subscriber.addRelation(self.subscriber_flair.get_flair(is_subscriber))
-            print(subscriber)
-            subscriber.save()
+            subscriber.current = 1 if is_subscriber else 0
+            subscriber.months =  1 if is_subscriber else 0
+            subscriber.flair = subscriber_flair.get_flair(is_subscriber)
 
+            self.db_session.add(subscriber)
+            self.db_session.commit()
             message.mark_as_read()
 
     def handle_flair_choice(self, messages):
         """ Get the two basic flairs from db """
         choice_flair = FlairChoice(
-            Flair().find(2),
-            Flair().find(3)
+            self.db_session.query(FlairModel).get(2),
+            self.db_session.query(FlairModel).get(3)
         )
 
         """ Find author in table, check that they are allowed """
@@ -123,8 +126,8 @@ class FlairChoice:
     def __init__(self, true_flair, false_flair):
         """
             Initialise
-            :param true_flair Flair:
-            :param false_flair Flair:
+            :param true_flair FlairModel:
+            :param false_flair FlairModel:
             :return:
         """
         self.true_flair = true_flair
@@ -147,7 +150,7 @@ class FlairChoice:
             :param condition:
             :return string:
         """
-        flair = self.get_class(condition)
+        flair = self.get_flair(condition)
         return flair.text
 
     def get_class(self, condition):
@@ -156,5 +159,5 @@ class FlairChoice:
             :param condition:
             :return string:
         """
-        flair = self.get_class(condition)
+        flair = self.get_flair(condition)
         return flair.css_class

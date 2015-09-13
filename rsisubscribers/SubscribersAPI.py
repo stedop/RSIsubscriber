@@ -14,7 +14,7 @@ import json
 from collections import namedtuple
 
 
-class Subscribers:
+class SubscribersAPI:
 
     def __init__(self):
         self.data = []
