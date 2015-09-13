@@ -2,7 +2,7 @@
 # -*- coding:  utf-8 -*-
 
 import sqlalchemy
-
+"""SQL ALCHEMY FTW"""
 class Subscriber():
     id = []
     reddit_username = []
