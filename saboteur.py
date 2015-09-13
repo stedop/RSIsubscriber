@@ -37,7 +37,8 @@ def main():
             """ Handle flair choice messages """
             monocle_messages = rsi_subscribers.get_messages('Select Flair')
             if monocle_messages:
-                pass
+                rsi_subscribers.handle_flair_choice(monocle_messages)
+
         except Exception as error:
             logging.exception(error)
             error_count += 1

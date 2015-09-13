@@ -32,7 +32,6 @@ class RSIsubscribers:
         """
         self.r = praw.Reddit('RSIsubscribers test')
         self.subreddit_name = subreddit_name
-        self.subscriber_flair = []
         self.data_manager = DataManager()
 
     def connect(self):
@@ -59,7 +58,7 @@ class RSIsubscribers:
         """
 
         """ Get the two basic flairs from db """
-        self.subscriber_flair = FlairChoice(
+        subscriber_flair = FlairChoice(
             Flair().find(1),
             Flair().find(2)
         )
@@ -67,7 +66,7 @@ class RSIsubscribers:
         for message in messages:
             subscribers = Subscribers()
             is_subscriber = subscribers.is_subscriber(message.body)
-            self.update_flair(message.author, self.subscriber_flair, is_subscriber)
+            self.update_flair(message.author, subscriber_flair, is_subscriber)
 
             """ todo THIS NEEDS WORK """
             subscriber = Subscriber.findBy(where=['reddit_username=' + message.author], limit=1)
@@ -84,6 +83,25 @@ class RSIsubscribers:
             subscriber.save()
 
             message.mark_as_read()
+
+    def handle_flair_choice(self, messages):
+        """ Get the two basic flairs from db """
+        choice_flair = FlairChoice(
+            Flair().find(2),
+            Flair().find(3)
+        )
+
+        """ Find author in table, check that they are allowed """
+        """ If not message back """
+
+        for message in messages:
+            if message.body == "Subscriber":
+                self.update_flair(message.author, choice_flair, True)
+            elif message.body == "Monocle":
+                self.update_flair(message.author, choice_flair, False)
+            else:
+                """ Message back """
+        pass
 
     def update_flair(self, username, flair_object, condition=False):
         """
