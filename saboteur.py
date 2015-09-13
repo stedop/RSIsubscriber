@@ -28,10 +28,16 @@ def main():
         try:
             rsi_subscribers = RSIsubscribers('dopscsstesting')
             rsi_subscribers.connect()
+
+            """ Handle subscriber messages """
             sbuscriber_messages = rsi_subscribers.get_messages('Subscriber')
             if sbuscriber_messages:
                 rsi_subscribers.check_subscriptions(sbuscriber_messages)
-            """ Todo check messages for subject change flair to allow big users to pick subscriber or monocle """
+
+            """ Handle flair choice messages """
+            monocle_messages = rsi_subscribers.get_messages('Select Flair')
+            if monocle_messages:
+                pass
         except Exception as error:
             logging.exception(error)
             error_count += 1
