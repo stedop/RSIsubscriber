@@ -9,7 +9,7 @@ Class to be used when accessing reddit and processing messages
 """
 import praw
 from rsisubscribers.SubscribersAPI import SubscribersAPI
-from rsisubscribers.DataManager import SubscriberModel, FlairModel
+from rsisubscribers.DataManager import SubscriberModel, FlairModel, MessagesModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -85,7 +85,10 @@ class RSIsubscribers:
             subscriber.flair = subscriber_flair.get_flair(is_subscriber)
 
             if is_high_rank:
-                self.send_flair_choice_message(message.author)
+                self.send_message(
+                    message.author,
+                    self.db_session.query(MessagesModel).filter(MessagesModel.name == "flair_choice")
+                )
 
             self.db_session.add(subscriber)
             self.db_session.commit()
@@ -100,19 +103,13 @@ class RSIsubscribers:
             if is_subscriber:
                 subscriber.months =+ 1
                 if subscriber.months >= 12:
-                    self.send_flair_choice_message(subscriber.reddit_username)
+                    self.send_message(
+                        subscriber.reddit_username,
+                        self.db_session.query(MessagesModel).filter(MessagesModel.name == "flair_choice")
+                    )
             else:
                 subscriber.current = 0
                 subscriber.flair = thinking_fliar
-
-    def send_flair_choice_message(self, reddit_username):
-        """
-        Sends a message to a user that informs them of special flair
-        :param reddit_username:
-        :return:
-        """
-
-        return True
 
     def handle_flair_choice(self, messages):
         """ Get the two basic flairs from db """
@@ -121,17 +118,44 @@ class RSIsubscribers:
             self.db_session.query(FlairModel).get(3)
         )
 
-        """ Find author in table, check that they are allowed """
-        """ If not message back """
+        api = SubscribersAPI()
 
         for message in messages:
-            if message.body == "Subscriber":
-                self.update_flair(message.author, choice_flair, True)
-            elif message.body == "Monocle":
-                self.update_flair(message.author, choice_flair, False)
+            is_subscriber = api.is_subscriber(message.body)
+            if is_subscriber:
+                if message.body == "Subscriber":
+                    self.update_flair(message.author, choice_flair, True)
+                elif message.body == "Monocle":
+                    self.update_flair(message.author, choice_flair, False)
+                else:
+                    self.send_message(
+                        message.author,
+                        self.db_session.query(
+                            MessagesModel
+                        ).filter(
+                            MessagesModel.name == "flair_choice_not_allowed"
+                        )
+                    )
             else:
-                """ Message back """
+                self.send_message(
+                        message.author,
+                        self.db_session.query(
+                            MessagesModel).
+                            filter(
+                                MessagesModel.name == "not_found_in_api"
+                            )
+                    )
         pass
+
+    def send_message(self, reddit_username, message=MessagesModel):
+        """
+        Sends a message to a user that informs them of special flair
+        :param reddit_username:
+        :param message Messages:
+        :return:
+        """
+        self.r.send_message(reddit_username, message.subject, message.body)
+        return True
 
     def update_flair(self, username, flair_object, condition=False):
         """

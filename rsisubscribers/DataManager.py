@@ -33,3 +33,12 @@ class FlairModel(Base):
     css_class = Column(String)
     text = Column(String)
     subscribers = relationship("SubscriberModel")
+
+
+class MessagesModel(Base):
+    __tablename__ = 'messages'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    subject = Column(String)
+    body = Column(String)
