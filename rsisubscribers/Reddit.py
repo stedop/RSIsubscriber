@@ -13,9 +13,9 @@ from rsisubscribers.DataManager import SubscriberModel, FlairModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-""" Need to abstract this away to a config manager """
-DB_USER =
-DB_PASS =
+""" Todo Need to abstract this away to a config manager """
+DB_USER = ""
+DB_PASS = ""
 DB_HOST = "127.0.0.1"
 DB_NAME = "rsi_subscribers"
 
@@ -59,6 +59,7 @@ class RSIsubscribers:
             Checks the username provided in the message body against the RSI api and performs actions
             :param messages: list
         """
+        api = SubscribersAPI()
 
         """ Get the two basic flairs from db """
         subscriber_flair = FlairChoice(
@@ -67,8 +68,9 @@ class RSIsubscribers:
         )
 
         for message in messages:
-            subscribers = SubscribersAPI()
-            is_subscriber = subscribers.is_subscriber(message.body)
+            is_subscriber = api.is_subscriber(message.body)
+            is_high_rank = api.is_high_rank(message.body)
+
             self.update_flair(message.author, subscriber_flair, is_subscriber)
 
             subscriber = self.db_session.query(SubscriberModel).filter(SubscriberModel.reddit_username == message.author).first()
@@ -80,12 +82,37 @@ class RSIsubscribers:
             subscriber.rsi_username = message.body
             subscriber.is_monocle = 0
             subscriber.current = 1 if is_subscriber else 0
-            subscriber.months =  1 if is_subscriber else 0
             subscriber.flair = subscriber_flair.get_flair(is_subscriber)
+
+            if is_high_rank:
+                self.send_flair_choice_message(message.author)
 
             self.db_session.add(subscriber)
             self.db_session.commit()
             message.mark_as_read()
+
+    def update_all_records(self):
+        api = SubscribersAPI()
+        thinking_fliar = self.db_session.query(FlairModel).get(1)
+
+        for subscriber in self.db_session.query(SubscriberModel).filter(SubscriberModel.current == 1):
+            is_subscriber = api.is_subscriber(subscriber.rsi_username)
+            if is_subscriber:
+                subscriber.months =+ 1
+                if subscriber.months >= 12:
+                    self.send_flair_choice_message(subscriber.reddit_username)
+            else:
+                subscriber.current = 0
+                subscriber.flair = thinking_fliar
+
+    def send_flair_choice_message(self, reddit_username):
+        """
+        Sends a message to a user that informs them of special flair
+        :param reddit_username:
+        :return:
+        """
+
+        return True
 
     def handle_flair_choice(self, messages):
         """ Get the two basic flairs from db """

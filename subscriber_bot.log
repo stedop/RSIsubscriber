@@ -1,0 +1,36 @@
+2015-09-14 01:04:40,265 get_all_users() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "saboteur.py", line 45, in main
+    rsi_subscribers.update_all_records()
+  File "/home/ste/PycharmProjects/RSIsubscriber/rsisubscribers/Reddit.py", line 91, in update_all_records
+    subscribers = api.get_all_users()
+TypeError: get_all_users() missing 1 required positional argument: 'self'
+2015-09-14 01:04:40,272 get_all_users() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "saboteur.py", line 45, in main
+    rsi_subscribers.update_all_records()
+  File "/home/ste/PycharmProjects/RSIsubscriber/rsisubscribers/Reddit.py", line 91, in update_all_records
+    subscribers = api.get_all_users()
+TypeError: get_all_users() missing 1 required positional argument: 'self'
+2015-09-14 01:04:40,274 get_all_users() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "saboteur.py", line 45, in main
+    rsi_subscribers.update_all_records()
+  File "/home/ste/PycharmProjects/RSIsubscriber/rsisubscribers/Reddit.py", line 91, in update_all_records
+    subscribers = api.get_all_users()
+TypeError: get_all_users() missing 1 required positional argument: 'self'
+2015-09-14 01:04:40,276 get_all_users() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "saboteur.py", line 45, in main
+    rsi_subscribers.update_all_records()
+  File "/home/ste/PycharmProjects/RSIsubscriber/rsisubscribers/Reddit.py", line 91, in update_all_records
+    subscribers = api.get_all_users()
+TypeError: get_all_users() missing 1 required positional argument: 'self'
+2015-09-14 01:04:40,278 get_all_users() missing 1 required positional argument: 'self'
+Traceback (most recent call last):
+  File "saboteur.py", line 45, in main
+    rsi_subscribers.update_all_records()
+  File "/home/ste/PycharmProjects/RSIsubscriber/rsisubscribers/Reddit.py", line 91, in update_all_records
+    subscribers = api.get_all_users()
+TypeError: get_all_users() missing 1 required positional argument: 'self'
+2015-09-14 01:04:40,278 5 Errors in a row, shutting down

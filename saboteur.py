@@ -39,6 +39,10 @@ def main():
             if monocle_messages:
                 rsi_subscribers.handle_flair_choice(monocle_messages)
 
+            if datetime.today().day == 15:
+                pass
+
+            rsi_subscribers.update_all_records()
         except Exception as error:
             logging.exception(error)
             error_count += 1
