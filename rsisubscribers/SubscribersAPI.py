@@ -81,7 +81,12 @@ class SubscribersAPI:
         :return:
         """
         high_ranks = [
-
+            'High Admiral',
+            'Grand Admiral',
+            'Lt. Commander',
+            'Space Marshall',
+            'Wing Commander',
+            'Completionist'
         ]
         try:
             subscriber_info = json.loads(
