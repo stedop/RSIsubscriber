@@ -11,18 +11,34 @@ Tasks managment and definition
 
 from abc import ABCMeta, abstractmethod
 import praw
-import sqlalchemy
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, session
+from config.ConfigManager import ConfigManager
 
 class RedditTaskManager():
     tasks = []
-    current_task = AbstractRedditTask
-    reddit_conn = praw.Reddit
+    __current_task = {}
+    __reddit_conn = praw.Reddit
+    __db_session = session
+    __db_engine = create_engine
+    __config = ConfigManager
 
-    def __init__(self, bot_name, tasks):
+    def __init__(self, bot_name, config, tasks=[]):
+        self.__config = config
+
+        self.__reddit_conn = praw.Reddit(self.__config.get("DEFAULT.bot_name"))
+        dsn_list = [
+            self.__config.get("DB.user"),
+            self.__config.get("DB.pass"),
+            self.__config.get("DB.host"),
+            self.__config.get("DB.name"),
+        ]
+        self.__db_engine = create_engine(
+            "mysql+mysqldb://{}:{}@{}/{}".format(dsn_list)
+        )
+
         for task in tasks:
             self.add_task(task)
-        self.reddit_conn = praw.Reddit(bot_name)
 
     def add_task(self, task):
         """
@@ -39,8 +55,8 @@ class RedditTaskManager():
         """
         return \
             [
-                message for message in self.reddit_conn.get_unread(limit=None)
-                if message.subject == self.current_task.trigger
+                message for message in self.__reddit_conn.get_unread(limit=None)
+                if message.subject == self.__current_task.trigger
             ]
 
     def run_task(self):
@@ -48,10 +64,10 @@ class RedditTaskManager():
 
     def run(self):
         for task in self.tasks:
-            self.current_task = task
+            self.__current_task = task
             messages = self.match_messages()
             for message in messages:
-                if self.current_task.handle(message):
+                if self.__current_task.handle(message):
                     message.mark_as_read()
 
 
