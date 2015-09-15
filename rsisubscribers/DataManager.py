@@ -10,7 +10,7 @@ Base = declarative_base()
 
 
 class SubscriberModel(Base):
-    __tablename__ = 'subscribers'
+    __tablename__ = 'rsisubs_subscribers'
 
     id = Column(Integer, primary_key=True)
     reddit_username = Column(String)
@@ -18,7 +18,7 @@ class SubscriberModel(Base):
     months = Column(Integer)
     current = Column(Integer)
     is_monocle = Column(Integer)
-    flair_id = Column(Integer, ForeignKey('flair.id'))
+    flair_id = Column(Integer, ForeignKey('rsisubs_flair.id'))
     flair = relationship("FlairModel")
 
     def is_subscriber(self):
@@ -27,7 +27,7 @@ class SubscriberModel(Base):
         return False
 
 class FlairModel(Base):
-    __tablename__ = 'flair'
+    __tablename__ = 'rsisubs_flair'
 
     id = Column(Integer, primary_key=True)
     css_class = Column(String)
@@ -36,7 +36,7 @@ class FlairModel(Base):
 
 
 class MessagesModel(Base):
-    __tablename__ = 'messages'
+    __tablename__ = 'rsisubs_messages'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)

@@ -14,8 +14,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 """ Todo Need to abstract this away to a config manager """
-DB_USER = ""
-DB_PASS = ""
+DB_USER = "root"
+DB_PASS = "rawjj3i"
 DB_HOST = "127.0.0.1"
 DB_NAME = "rsi_subscribers"
 
@@ -69,6 +69,7 @@ class RSIsubscribers:
 
         for message in messages:
             is_subscriber = api.is_subscriber(message.body)
+            print(is_subscriber)
             is_high_rank = api.is_high_rank(message.body)
 
             self.update_flair(message.author, subscriber_flair, is_subscriber)
@@ -77,6 +78,7 @@ class RSIsubscribers:
 
             if not subscriber:
                 subscriber = SubscriberModel()
+                subscriber.months = 1
 
             subscriber.reddit_username = message.author
             subscriber.rsi_username = message.body

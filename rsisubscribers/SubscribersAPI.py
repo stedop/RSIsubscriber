@@ -13,7 +13,6 @@ from io import BytesIO
 import json
 from collections import namedtuple
 
-
 class SubscribersAPI:
     base_href = "http://sc-api.com/"
 
@@ -21,14 +20,19 @@ class SubscribersAPI:
         self.data = []
 
     def send_request(self, request_uri):
+        #Hack to work around python 2.4
+        request_uri = str(request_uri.encode('utf-8'))
+
         buffer = BytesIO()
         c = pycurl.Curl()
         c.setopt(c.URL, request_uri)
-        c.setopt(c.WRITEDATA, buffer)
+        #Another stupid hack
+        c.setopt(c.WRITEFUNCTION, buffer.write)
+        #c.setopt(c.WRITEDATA, buffer)
         c.perform()
         c.close()
-
-        return buffer.getvalue()
+        value = buffer.getvalue()
+        return value
 
     def find_user(self, subscriber_name):
 
@@ -38,7 +42,8 @@ class SubscribersAPI:
         :return string
         """
         request_uri = self.base_href + '?api_source=cache&system=accounts&action=full_profile&target_id=' + subscriber_name
-        return self.send_request(request_uri).decode("iso-8859-1")
+        response = self.send_request(request_uri).decode("iso-8859-1")
+        return response
 
     def get_all_users(self):
         """
@@ -46,7 +51,8 @@ class SubscribersAPI:
         :return: string
         """
         request_uri = self.base_href + '?api_source=cache&system=accounts&action=all_accounts&ormat=pretty_json'
-        return self.send_request(request_uri).decode("iso-8859-1")
+        response = self.send_request(request_uri).decode("iso-8859-1")
+        return response
 
     def is_subscriber(self, subscriber_name):
         """

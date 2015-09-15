@@ -17,15 +17,16 @@ def main():
 
     """ init log """
     logging.basicConfig(
-        filename = "subscriber_bot.log",
+        filename="subscriber_bot.log",
         filemode="w",
-        level = logging.WARN,
+        level=logging.WARN,
         format=LOGFORMAT
     )
+    logging.captureWarnings(True)
 
     error_count = 0
 
-    rsi_subscribers = RSIsubscribers('dopscsstesting')
+    rsi_subscribers = RSIsubscribers('RSIsubscribertesting')
     rsi_subscribers.connect()
     while True:
         try:
@@ -39,10 +40,8 @@ def main():
             if monocle_messages:
                 rsi_subscribers.handle_flair_choice(monocle_messages)
 
-            if datetime.today().day == 15:
-                pass
-
-            rsi_subscribers.update_all_records()
+            # if datetime.today().day == 15:
+                # rsi_subscribers.update_all_records()
         except Exception as error:
             logging.exception(error)
             error_count += 1
