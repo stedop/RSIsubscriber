@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-from config.ConfigManager import ConfigManager
-from taks.TasksManager import RedditTaskManager, AbstractRedditTask
+from src.ConfigManager import ConfigManager
 
 
 """tm = RedditTaskManager("Task Bot", ConfigManager("rsi_config.ini"))
