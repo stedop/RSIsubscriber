@@ -21,17 +21,25 @@ class ConfigManager:
         self.parser = configparser.ConfigParser()
         self.parser.BOOLEAN_STATES = {'1': True, '0': False}
         self.config = self.parser.read(self.config_filename)
-        self.parser.sections()
-        print(self.config['DB']['host'])
 
     def get(self, keyname):
-        for step in keyname.split("."):
-            pass
+        steps = keyname.split('.')
+        return self.parser.get(steps[0], steps[1],fallback=False)
 
-    def set(self, keyname, value):
-        for step in keyname.split("."):
-            pass
+    def set(self, keyname, value=""):
+        steps = keyname.split('.')
+        if len(steps) == 1:
+            self.parser.add_section(steps[0])
+            return True
+
+        if not self.parser.has_section(steps[0]):
+            self.parser.add_section(steps[0])
+
+        if self.parser.set(steps[0], steps[1], value):
+            return True
+
+        return False
 
     def __del__(self):
-        """with open(self.config_filename, 'w') as configfile:
-            self.parser.write(configfile)"""
+        with open(self.config_filename, 'w') as configfile:
+            self.parser.write(configfile)
