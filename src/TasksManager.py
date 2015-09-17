@@ -4,86 +4,81 @@
 """
 Tasks
 ~~~~~~~~~~~~~~~
-Tasks managment and definition
+Tasks management and definition
 :license: MIT
 """
 
-from abc import ABCMeta, abstractmethod
-
-import praw
-from sqlalchemy import create_engine
-from sqlalchemy.orm import session
-
-from src import ConfigManager
+from abc import ABCMeta, abstractmethod, abstractstaticmethod
 
 
-class RedditTaskManager():
+
+class TaskManager():
+    """
+    Task management service
+    """
+
     tasks = []
-    __current_task = {}
-    __reddit_conn = praw.Reddit
-    __db_session = session
-    __db_engine = create_engine
-    __config = ConfigManager
+    __current_task = []
 
-    def __init__(self, config, tasks=[]):
-        self.__config = config
+    def __init__(self, tasks, bot):
+        """
 
-        self.__reddit_conn = praw.Reddit(self.__config.get("DEFAULT.bot_name"))
-        dsn_list = [
-            self.__config.get("DB.user"),
-            self.__config.get("DB.pass"),
-            self.__config.get("DB.host"),
-            self.__config.get("DB.name"),
-        ]
-        self.__db_engine = create_engine(
-            "mysql+mysqldb://{}:{}@{}/{}".format(dsn_list)
-        )
-
+        :param tasks:
+        :param bot Bot:
+        :return:
+        """
         for task in tasks:
-            self.add_task(task)
+            self.add_task(task(bot))
+
 
     def add_task(self, task):
         """
         Add task to task list
-        :param task AbbstractRedditTask:
+        :param task AbstractRedditTask:
         :return:
         """
-        self.tasks.append(task.trigger)
+        self.tasks.append(task)
 
-    def match_messages(self):
+    def run_task(self, task):
         """
-        Match any unread messages to task
+        Run the task
+        :param task AbstractTaskType:
         :return:
         """
-        return \
-            [
-                message for message in self.__reddit_conn.get_unread(limit=None)
-                if message.subject == self.__current_task.trigger
-            ]
-
-    def run_task(self):
-            pass
+        requirements = task.requirements()
+        if requirements:
+            return task.handle(requirements)
 
     def run(self):
-        for task in self.tasks:
-            self.__current_task = task
-            messages = self.match_messages()
-            for message in messages:
-                if self.__current_task.handle(message):
-                    message.mark_as_read()
+        if self.tasks:
+            for task in self.tasks:
+                self.run_task(task)
 
 
-class AbstractRedditTask(object):
+class AbstractTaskType(object):
+    """
+    Task Definition
+    """
     __metaclass__ = ABCMeta
 
-    trigger = ""
-    db = False
+    bot = None
 
-    def __init__(self, trigger, dsn=False):
-        self.trigger = trigger
-        if dsn:
-            self.db = create_engine(dsn)
+    def __init__(self, bot):
+        self.bot = bot
 
     @abstractmethod
-    def handle(self):
-        pass
+    def handle(self, requirements):
+        """
+        Busienss logic of the task
+        :return bool:
+        """
+        return True
+
+    @abstractmethod
+    def requirements(self):
+        """
+        Handles the trigger, if it returns requierments then pass them to the handle
+        :return bool:
+        """
+        requirements = []
+        return requirements

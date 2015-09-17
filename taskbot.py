@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-from src.ConfigManager import ConfigManager
-from src.TasksManager import RedditTaskManager
+from src.TasksManager import AbstractTaskType
+from src.TheBot import Bot
+from rsisubscribers.SubscribersAPI import SubscribersAPI
 
-tm = RedditTaskManager("Task Bot", ConfigManager("rsi_config.ini"))
-tm.run()
+tasks = [SubscriptionTask]
+myBot = Bot('rsi_config.ini', tasks)

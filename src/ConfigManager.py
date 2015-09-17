@@ -9,7 +9,12 @@ Config management and definition
 """
 
 import configparser
+import atexit
 
+
+def cleanup(parser, config_filename):
+        with open(config_filename, 'w') as configfile:
+            parser.write(configfile)
 
 class ConfigManager:
     parser = configparser.ConfigParser
@@ -21,10 +26,14 @@ class ConfigManager:
         self.parser = configparser.ConfigParser()
         self.parser.BOOLEAN_STATES = {'1': True, '0': False}
         self.config = self.parser.read(self.config_filename)
+        atexit.register(cleanup, self.parser, self.config_filename)
 
     def get(self, keyname):
         steps = keyname.split('.')
-        return self.parser.get(steps[0], steps[1],fallback=False)
+        if len(steps) == 1:
+            return  self.parser.get(steps[0], fallback=False)
+
+        return self.parser.get(steps[0], steps[1], fallback=False)
 
     def set(self, keyname, value=""):
         steps = keyname.split('.')
@@ -40,6 +49,5 @@ class ConfigManager:
 
         return False
 
-    def __del__(self):
-        with open(self.config_filename, 'w') as configfile:
-            self.parser.write(configfile)
+    def section_exists(self, section):
+        return self.parser.has_section(section)
