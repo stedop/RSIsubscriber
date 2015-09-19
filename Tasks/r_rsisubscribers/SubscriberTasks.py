@@ -8,7 +8,7 @@ MCP
 :license: MIT
 """
 
-from src.TasksManager import AbstractTaskType
+from Bot.TasksManager import AbstractTaskType
 from DataModels.SubscribersAPI import SubscribersAPI
 from DataModels.SubscriberModel import SubscriberModel
 from DataModels.FlairModel import FlairModel

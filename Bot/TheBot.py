@@ -7,9 +7,9 @@ TheBot
 MCP
 :license: MIT
 """
-from src.TasksManager import TaskManager
-from src.ConfigManager import ConfigManager
-from src.DataManager import DataManager
+from Bot.TasksManager import TaskManager
+from Bot.ConfigManager import ConfigManager
+from Bot.DataManager import DataManager
 from praw.handlers import MultiprocessHandler
 import praw
 import atexit

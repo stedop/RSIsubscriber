@@ -8,7 +8,7 @@ Tasks Relating to Auto Posts
 :author: ste
 """
 
-from src.TasksManager import AbstractTaskType
+from Bot.TasksManager import AbstractTaskType
 
 
 class ListPostsTask(AbstractTaskType):

@@ -4,7 +4,7 @@
 import logging
 import datetime
 
-from src.TheBot import Bot
+from Bot.TheBot import Bot
 from Tasks.r_rsisubscribers.SubscriberTasks import CheckSubscriberMessagesTask, AuthenticateSubscribersTask
 
 
