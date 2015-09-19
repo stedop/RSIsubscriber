@@ -8,9 +8,10 @@ Tasks management and definition
 :license: MIT
 """
 
-from abc import ABCMeta, abstractmethod, abstractstaticmethod
+from abc import ABCMeta, abstractmethod
 from DataModels.MessagesModel import MessagesModel
 from DataModels.FlairModel import FlairModel
+from Bot.TheBot import Bot
 import re
 
 class TaskManager():
@@ -21,7 +22,7 @@ class TaskManager():
     tasks = []
     __current_task = []
 
-    def __init__(self, tasks, bot):
+    def __init__(self, tasks, bot=Bot):
         """
 
         :param tasks:
@@ -64,7 +65,7 @@ class AbstractTaskType(object):
 
     bot = None
 
-    def __init__(self, bot):
+    def __init__(self, bot=Bot):
         self.bot = bot
 
     @abstractmethod
@@ -94,7 +95,7 @@ class AbstractTaskType(object):
                             MessagesModel
                         ).filter(
                             MessagesModel.name == template_name
-                        )
+                        ).first()
             body = re.sub("|| username ||", user_name, template.body)
             for key, value in replacements:
                 body = re.sub("|| " + key + "||", value, body)
