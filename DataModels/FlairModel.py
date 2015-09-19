@@ -2,12 +2,9 @@
 # -*- coding:  utf-8 -*-
 
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from DataModels.SubScriberModel import SubscriberModel
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from DataModels import Base
 
 class FlairModel(Base):
     __tablename__ = 'rsisubs_flair'

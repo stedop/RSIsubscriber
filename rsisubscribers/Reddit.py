@@ -14,10 +14,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 """ Todo Need to abstract this away to a config manager """
-DB_USER = "root"
-DB_PASS = "rawjj3i"
-DB_HOST = "127.0.0.1"
-DB_NAME = "rsi_subscribers"
+DB_USER = ""
+DB_PASS = ""
+DB_HOST = ""
+DB_NAME = ""
 
 Session = sessionmaker()
 

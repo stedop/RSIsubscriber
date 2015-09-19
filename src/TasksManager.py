@@ -9,8 +9,9 @@ Tasks management and definition
 """
 
 from abc import ABCMeta, abstractmethod, abstractstaticmethod
-
-
+from DataModels.MessagesModel import MessagesModel
+from DataModels.FlairModel import FlairModel
+import re
 
 class TaskManager():
     """
@@ -82,3 +83,30 @@ class AbstractTaskType(object):
         """
         requirements = []
         return requirements
+
+    def match_unread(self, subject):
+        messages = self.bot.r.get_unread([message for message in self.bot.r.get_unread(limit=None) if message.subject == 'Subscriber'])
+        return messages
+
+    def send_message(self, template_name=None, user_name=None, **replacements):
+        if (template_name):
+            template = self.bot.data_manager.query(
+                            MessagesModel
+                        ).filter(
+                            MessagesModel.name == template_name
+                        )
+            body = re.sub("|| username ||", user_name, template.body)
+            for key, value in replacements:
+                body = re.sub("|| " + key + "||", value, body)
+
+            self.bot.r.send_message(user_name, template.subject, body)
+
+        return True
+
+    def set_flair(self, user_name, flair_id):
+        flair = self.bot.data_manager.query(FlairModel).get(flair_id)
+        if flair:
+            self.bot.r.set_flair(user_name, flair.text, flair.css_class)
+            return flair
+
+        return False

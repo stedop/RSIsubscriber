@@ -12,6 +12,7 @@ import pycurl
 from io import BytesIO
 import json
 from collections import namedtuple
+import re
 
 class SubscribersAPI:
     base_href = "http://sc-api.com/"
@@ -22,8 +23,7 @@ class SubscribersAPI:
 
     def send_request(self, request_uri):
         # Hack to work around python 2.4
-        request_uri = str(request_uri.encode('utf-8'))
-        print("REQUEST URL : " + request_uri)
+        # request_uri = str(request_uri.encode('utf-8'))
         buffer = BytesIO()
         c = pycurl.Curl()
         c.setopt(c.URL, request_uri)
@@ -42,10 +42,9 @@ class SubscribersAPI:
         :param subscriber_name: Name string
         :return string
         """
-        if subscriber_name in self.searches.keys():
-            return self.searches[subscriber_name]
-        else:
-            request_uri = self.base_href + "?api_source=cache&system=accounts&action=full_profile&target_id=" + subscriber_name
+        if subscriber_name not in self.searches.keys():
+            request_uri = "{}?api_source=cache&system=accounts&action=full_profile&target_id={}"\
+                .format(self.base_href, subscriber_name)
             raw_response = self.send_request(request_uri).decode("iso-8859-1")
             self.searches[subscriber_name] = json.loads(
                 raw_response,
@@ -66,7 +65,6 @@ class SubscribersAPI:
         """
         try:
             subscriber_info = self.find_user(subscriber_name)
-
             """ Handle Uer Not Found """
             if not subscriber_info.data:
                 return False
@@ -92,14 +90,7 @@ class SubscribersAPI:
             'Completionist'
         ]
         try:
-            subscriber_info = json.loads(
-                self.find_user(subscriber_name),
-                object_hook=lambda d: namedtuple(
-                    'subscriber_info',
-                    d.keys()
-                )
-                (*d.values())
-            )
+            subscriber_info = self.find_user(subscriber_name)
 
             """ Handle Uer Not Found """
             if not subscriber_info.data:
@@ -109,5 +100,25 @@ class SubscribersAPI:
                 if org.index('Rank') and high_ranks.index(org['Rank']):
                     return True
 
+        except ValueError:
+            return False
+
+    def is_authenticated(self, subscriber_name):
+        """
+        Finds authentication Link
+        :param subscriber_name:
+        :return:
+        """
+        try:
+            subscriber_info = self.find_user(subscriber_name)
+            link = "http://www.reddit.com/user/" + subscriber_name
+            link = re.escape(link)
+            bio = str(subscriber_info.data.bio)
+            """ Handle Uer Not Found """
+            if not subscriber_info.data:
+                return False
+
+            if bio.find(link):
+                return True
         except ValueError:
             return False

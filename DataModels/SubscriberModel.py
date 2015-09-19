@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, backref
-from DataModels.FlairModel import FlairModel
-
-Base = declarative_base()
+from sqlalchemy.orm import relationship
+from DataModels import Base
 
 
 class SubscriberModel(Base):
@@ -18,7 +15,7 @@ class SubscriberModel(Base):
     months = Column(Integer)
     current = Column(Integer)
     is_monocle = Column(Integer)
-    suthenticated = Column(Integer)
+    is_authenticated = Column(Integer)
     flair_id = Column(Integer, ForeignKey('rsisubs_flair.id'))
     flair = relationship("FlairModel")
 
