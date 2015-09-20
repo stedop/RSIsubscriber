@@ -68,6 +68,11 @@ class AbstractTaskType(object):
     mod_list = []
 
     def __init__(self, bot=Bot):
+        """
+        Sets the bot and gets the mod list
+        :param bot:
+        :return:
+        """
         self.bot = bot
         for mod in bot.reddit.get_subreddit(bot.config.get("reddit.subreddit")).get_moderators():
             self.mod_list.append(mod.name)
@@ -90,10 +95,22 @@ class AbstractTaskType(object):
         return requirements
 
     def match_unread(self, subject):
-        messages = self.bot.reddit.get_unread([message for message in self.bot.reddit.get_unread(limit=None) if message.subject == 'Subscriber'])
+        """
+        Matches any unread messages with the subject variable and returns then as a dict
+        :param subject:
+        :return:
+        """
+        messages = self.bot.reddit.get_unread([message for message in self.bot.reddit.get_unread(limit=None) if message.subject == subject])
         return messages
 
     def send_message(self, template_name=None, user_name=None, **replacements):
+        """
+        Sends message to the user from the templates db
+        :param template_name:
+        :param user_name:
+        :param replacements:
+        :return:
+        """
         if (template_name):
             template = self.bot.data_manager.query(
                             MessagesModel
@@ -117,6 +134,13 @@ class AbstractTaskType(object):
         return True
 
     def set_flair(self, user_name, flair_id):
+        """
+        Sets a users flair based on a db entry
+        Also why do I keep spelling flair "fliar"
+        :param user_name:
+        :param flair_id:
+        :return:
+        """
         flair = self.bot.data_manager.query(FlairModel).get(flair_id)
         if flair:
             self.bot.reddit.set_flair(user_name, flair.text, flair.css_class)
@@ -125,6 +149,11 @@ class AbstractTaskType(object):
         return False
 
     def is_mod(self, user_name):
+        """
+        Checks to see if a user is a mod of the config subreddit
+        :param user_name:
+        :return:
+        """
         if user_name in self.mod_list:
             return True
 

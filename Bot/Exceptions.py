@@ -9,6 +9,9 @@ Exceptions for the bot
 """
 
 class MessageNotFoundException(Exception):
+    """
+    If a template message isn't found
+    """
     def __init__(self, value):
         self.value = value
     def __str__(self):

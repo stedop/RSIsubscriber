@@ -22,6 +22,11 @@ class ConfigManager:
     config = []
 
     def __init__(self, config_filename):
+        """
+        Parses and reads the config file, sets up the write when the program is complete
+        :param config_filename:
+        :return:
+        """
         self.config_filename = config_filename
         self.parser = configparser.ConfigParser()
         self.parser.BOOLEAN_STATES = {'1': True, '0': False}
@@ -29,6 +34,12 @@ class ConfigManager:
         atexit.register(cleanup, self.parser, self.config_filename)
 
     def get(self, keyname):
+        """
+        Gets a config value using dot notation
+        e.g. "reddit.subreddit"
+        :param keyname:
+        :return:
+        """
         steps = keyname.split('.')
         if len(steps) == 1:
             return  self.parser.get(steps[0], fallback=False)
@@ -36,6 +47,12 @@ class ConfigManager:
         return self.parser.get(steps[0], steps[1], fallback=False)
 
     def set(self, keyname, value=""):
+        """
+        Sets a config value or section
+        :param keyname:
+        :param value:
+        :return:
+        """
         steps = keyname.split('.')
         if len(steps) == 1:
             self.parser.add_section(steps[0])
@@ -50,4 +67,9 @@ class ConfigManager:
         return False
 
     def section_exists(self, section):
+        """
+        Checks to see if that section exists
+        :param section:
+        :return:
+        """
         return self.parser.has_section(section)

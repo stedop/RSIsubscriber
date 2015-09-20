@@ -2,7 +2,10 @@
 # -*- coding:  utf-8 -*-
 
 """
-TheBot
+TheBot - Acts as an accessor and builer for the the various tools we need, will probably be extended to3
+allow for different orm's or add standard api's
+
+Todo add a template manager
 ~~~~~~~~~~~~~~~
 MCP
 :license: MIT
@@ -21,6 +24,11 @@ class Bot:
     reddit = praw.Reddit
 
     def __init__(self, config_file):
+        """
+        Sets up th config manager, standard data manager and the praw connection
+        :param config_file:
+        :return:
+        """
         self.config = ConfigManager(config_file)
 
         if self.config.section_exists('database'):
