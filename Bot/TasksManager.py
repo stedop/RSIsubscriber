@@ -103,7 +103,11 @@ class AbstractTaskType(object):
             if template:
                 body = re.sub("|| username ||", user_name, template.body)
                 for key, value in replacements:
-                    body = re.sub("|| " + key + "||", value, body)
+                    if type(value) == dict:
+                        # Todo find the section in template and replace values LOOK INTO MAKO
+                        pass
+                    else:
+                        body = re.sub("|| " + key + "||", value, body)
 
                 self.bot.reddit.send_message(user_name, template.subject, body)
             else:
