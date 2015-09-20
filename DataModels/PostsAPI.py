@@ -16,7 +16,7 @@ from datetime import datetime
 from sqlalchemy import func
 
 
-class PostsApi():
+class PostsAPI():
     __bot = Bot
 
     def __init__(self, bot=Bot):
