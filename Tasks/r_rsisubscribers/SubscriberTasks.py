@@ -59,6 +59,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
                 )
             else:
                 self.send_message('subscriber_not_found', message.author)
+            message.mark_as_read()
 
         # Commits and DB changes
         self.bot.data_manager.commit()
@@ -125,7 +126,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
         return True
 
     def requirements(self):
-        awaiting = self.bot.data_manager.query(SubscriberModel).filter(SubscriberModel.is_authenticated).get()
+        awaiting = self.bot.data_manager.query(SubscriberModel).filter(SubscriberModel.is_authenticated == 1)
 
         requirements = {
             "awaiting": awaiting,
