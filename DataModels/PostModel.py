@@ -9,9 +9,10 @@ Mod Generated Post Model
 :author: Stephen Dop
 """
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, text
 from sqlalchemy.orm import relationship
 from DataModels import Base
+import datetime
 
 
 class PostModel(Base):
@@ -21,9 +22,10 @@ class PostModel(Base):
     creator_username = Column(String)
     post_title = Column(String)
     post_body = Column(String)
-    last_time_completed = Column(DateTime)
-    reoccurring_unit = Column(String)  # "Days", "Weeks", "Month" etc.
-    reoccurring_every_x = Column(String)  # Reoccurring interval
-    last_update = Column(DateTime)
+    reoccurring_unit = Column(String)  # Must be MySQL standard interval unit
+    reoccurring_interval = Column(String)  # Reoccurring interval
     links = relationship("LinksModel")
     parsed_post = relationship("ParsedPostModel")
+    last_completed = Column(DateTime(timezone=True))
+    last_update = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+    archived = Column(DateTime(timezone=True), nullable=True, server_default=text('NULL'))
