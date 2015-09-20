@@ -11,6 +11,7 @@ Tasks management and definition
 from abc import ABCMeta, abstractmethod
 from DataModels.MessagesModel import MessagesModel
 from DataModels.FlairModel import FlairModel
+from Bot.Exceptions import MessageNotFoundException
 from Bot.TheBot import Bot
 import re
 
@@ -64,9 +65,12 @@ class AbstractTaskType(object):
     __metaclass__ = ABCMeta
 
     bot = None
+    mod_list = []
 
     def __init__(self, bot=Bot):
         self.bot = bot
+        for mod in bot.reddit.get_subreddit(bot.config.get("reddit.subreddit")).get_moderators():
+            self.mod_list.append(mod.name)
 
     @abstractmethod
     def handle(self, requirements):
@@ -86,7 +90,7 @@ class AbstractTaskType(object):
         return requirements
 
     def match_unread(self, subject):
-        messages = self.bot.r.get_unread([message for message in self.bot.r.get_unread(limit=None) if message.subject == 'Subscriber'])
+        messages = self.bot.reddit.get_unread([message for message in self.bot.reddit.get_unread(limit=None) if message.subject == 'Subscriber'])
         return messages
 
     def send_message(self, template_name=None, user_name=None, **replacements):
@@ -96,18 +100,28 @@ class AbstractTaskType(object):
                         ).filter(
                             MessagesModel.name == template_name
                         ).first()
-            body = re.sub("|| username ||", user_name, template.body)
-            for key, value in replacements:
-                body = re.sub("|| " + key + "||", value, body)
+            if template:
+                body = re.sub("|| username ||", user_name, template.body)
+                for key, value in replacements:
+                    body = re.sub("|| " + key + "||", value, body)
 
-            self.bot.r.send_message(user_name, template.subject, body)
-
+                self.bot.reddit.send_message(user_name, template.subject, body)
+            else:
+                # Todo uncomment below add username to information so the mods know who to contact
+                # raise MessageNotFoundException("Message with the name " + template_name + " not found")
+                pass
         return True
 
     def set_flair(self, user_name, flair_id):
         flair = self.bot.data_manager.query(FlairModel).get(flair_id)
         if flair:
-            self.bot.r.set_flair(user_name, flair.text, flair.css_class)
+            self.bot.reddit.set_flair(user_name, flair.text, flair.css_class)
             return flair
+
+        return False
+
+    def is_mod(self, user_name):
+        if user_name in self.mod_list:
+            return True
 
         return False
