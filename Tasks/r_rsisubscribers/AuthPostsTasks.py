@@ -9,22 +9,58 @@ Tasks Relating to Auto Posts
 """
 
 from Bot.TasksManager import AbstractTaskType
+from DataModels.PostsAPI import PostsAPI
+import re
 
 
 class ListPostsTask(AbstractTaskType):
+    """
+    Sends a list of all current active posts
+    """
+    api = PostsAPI()
+
     def handle(self, requirements):
-        pass
+        """
+        Check the user is authorised and send the list
+        :param requirements:
+        :return:
+        """
+        messages = requirements['messages']
+
+        for message in messages:
+            if self.is_mod(message.author):
+                all_posts = self.api.get_all_posts()
+                self.send_message('list_posts', message.author, all_posts)
+            else:
+                self.send_message('not_authorised', message.author)
+        return True
 
     def requirements(self):
-        pass
+        """
+        Get any messages to the bot which ask for a list
+        :return:
+        """
+        post_messages = self.match_unread('List Posts')
+        if post_messages:
+            return {'messages': post_messages}
+        return False
 
 
 class CreatePostTask(AbstractTaskType):
     def handle(self, requirements):
-        pass
+        messages = requirements['messages']
+
+        for message in messages:
+            post_name = re.sub('Create Post ', '', message.subject)
+            body = message.body
+            # Todo work out lines
+        return True
 
     def requirements(self):
-        pass
+        create_post_messages = self.match_unread('Create Post')
+        if create_post_messages:
+            return {'messages': create_post_messages}
+        return False
 
 
 class EditPostTask(AbstractTaskType):
