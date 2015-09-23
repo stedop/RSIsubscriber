@@ -11,6 +11,7 @@ Tasks management and definition
 from abc import ABCMeta, abstractmethod
 from DataModels.MessagesModel import MessagesModel
 from DataModels.FlairModel import FlairModel
+from mako.template import Template
 from Bot.Exceptions import MessageNotFoundException
 from Bot.TheBot import Bot
 import re
@@ -103,30 +104,24 @@ class AbstractTaskType(object):
         messages = self.bot.reddit.get_unread([message for message in self.bot.reddit.get_unread(limit=None) if message.subject == subject])
         return messages
 
-    def send_message(self, template_name=None, user_name=None, **replacements):
+    def send_message(self, template_name=None, user_name=None, **template_values):
         """
         Sends message to the user from the templates db
         :param template_name:
         :param user_name:
-        :param replacements:
+        :param template_values:
         :return:
         """
-        if (template_name):
-            template = self.bot.data_manager.query(
+        if template_name:
+            template_body = self.bot.data_manager.query(
                             MessagesModel
                         ).filter(
                             MessagesModel.name == template_name
                         ).first()
-            if template:
-                body = re.sub("|| username ||", user_name, template.body)
-                for key, value in replacements:
-                    if type(value) == dict:
-                        # Todo find the section in template and replace values LOOK INTO MAKO
-                        pass
-                    else:
-                        body = re.sub("|| " + key + "||", value, body)
-
-                self.bot.reddit.send_message(user_name, template.subject, body)
+            if template_body:
+                template_values.update(user_name=user_name)
+                body = Template(template_body).render(template_values)
+                self.bot.reddit.send_message(user_name, template_body.subject, body)
             else:
                 # Todo uncomment below add username to information so the mods know who to contact
                 # raise MessageNotFoundException("Message with the name " + template_name + " not found")
@@ -143,7 +138,7 @@ class AbstractTaskType(object):
         """
         flair = self.bot.data_manager.query(FlairModel).get(flair_id)
         if flair:
-            self.bot.reddit.set_flair(user_name, flair.text, flair.css_class)
+            self.bot.reddit.set_flair(self.bot.config.get("reddit.subreddit"), user_name, flair.text, flair.css_class)
             return flair
 
         return False
