@@ -15,6 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, session
 from praw.handlers import MultiprocessHandler
 import praw
+import logging
 
 
 class Bot:
@@ -22,15 +23,16 @@ class Bot:
     data_manager = session.Session
     __db_engine = create_engine
     reddit = praw.Reddit
+    logger = logging
 
-    def __init__(self, config_file):
+    def __init__(self, config_file, logger=logging):
         """
         Sets up th config manager, standard data manager and the praw connection
         :param config_file:
         :return:
         """
         self.config = ConfigManager(config_file)
-
+        self.logger = logger
         if self.config.section_exists('database'):
             Session = sessionmaker()
             self.__db_engine = create_engine(
