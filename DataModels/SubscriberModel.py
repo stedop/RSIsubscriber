@@ -14,6 +14,7 @@ class SubscriberModel(Base):
     reddit_username = Column(String)
     rsi_username = Column(String)
     months = Column(Integer)
+    highest_rank = Column(Integer)
     current = Column(Integer)
     is_monocle = Column(Integer)
     is_authenticated = Column(Integer)
