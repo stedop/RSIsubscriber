@@ -19,19 +19,20 @@ logging.basicConfig(
     format=LOGFORMAT
 )
 logging.captureWarnings(True)
+bot_logger = logging.getLogger('TheBot')
 
 try:
     tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
-    myBot = Bot('rsi_config.ini')
+    myBot = Bot('rsi_config.ini', bot_logger)
 
     task_manager = TaskManager(tasks, myBot)
     task_manager.run()
 
 except MessageNotFoundException as message_not_found:
-    logging.exception(message_not_found)
+    bot_logger.exception(message_not_found)
     # Todo send message to mods and continue operations
     pass
 except Exception as error:
     # Todo on a fatal error send message to bot owner and dev
-    logging.exception(error)
-    raise
+    bot_logger.exception(error)
+    pass

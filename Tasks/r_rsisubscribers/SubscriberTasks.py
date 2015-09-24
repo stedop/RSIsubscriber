@@ -13,6 +13,7 @@ from DataModels.CitizensAPI import CitizensAPI
 from DataModels.SubscriberModel import SubscriberModel
 from DataModels.FlairModel import FlairModel
 from Bot.Exceptions import CitizenNotFoundException
+import datetime
 
 
 class CheckSubscriberMessagesTask(AbstractTaskType):
@@ -21,11 +22,11 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     ~~~~~~~~~~~~~~~
     MCP
     :license: MIT
-    :messages used: 'subscription_auth_monocle',
+    :messages used: 'citizen_not_found',
                     'subscription_auth',
                     'subscription_not_auth',
-                    'subscriber_not_found',
-                    'no_subscription'
+                    'no_subscription_auth',
+                    'no_subscription_no_auth'
     """
     citizens_api = CitizensAPI()
 
@@ -39,7 +40,8 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             try:
                 is_subscribing = self.citizens_api.is_subscribing(message.body)
             except CitizenNotFoundException as not_found:
-                self.send_message('subscriber_not_found', message.author)
+                self.send_message('citizen_not_found', message.author)
+                self.bot.logger.exception(not_found)
                 continue
 
             flair_id = 2
@@ -66,16 +68,12 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     def subscribing(self, message, flair_id):
         is_subscribing = True
         is_authenticated = self.citizens_api.is_authenticated(message.body)
-        is_monocle = self.citizens_api.is_high_rank(message.body)
         highest_rank = self.citizens_api.get_rank(message.body)
 
-        if is_authenticated and is_monocle:
-            flair_id = 1
-            self.send_message('subscription_auth_monocle', message.author)
-        elif is_authenticated and not is_monocle:
+        if is_authenticated:
             flair_id = 1
             self.send_message('subscription_auth', message.author)
-        elif not is_authenticated and not is_monocle:
+        else:
             self.send_message('subscription_not_auth', message.author)
 
         flair = self.set_flair(message.author, flair_id)
@@ -87,7 +85,6 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             highest_rank,
             is_subscribing,
             is_authenticated,
-            is_monocle,
             flair
         )
 
@@ -95,9 +92,9 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         flair = self.set_flair(message.author, flair_id)
         is_subscribing = 0
         is_authenticated = self.citizens_api.is_authenticated(message.body)
-        is_monocle = None
         current = None
         highest_rank = self.citizens_api.get_rank(message.body)
+
         self.update_subscriber_database(
             message.author,
             message.body,
@@ -105,10 +102,12 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             highest_rank,
             is_subscribing,
             is_authenticated,
-            is_monocle,
             flair
         )
-        self.send_message('no_subscription', message.author)
+        if is_authenticated:
+            self.send_message('no_subscription_auth', message.author)
+        else:
+            self.send_message('no_subscription_no_auth', message.author)
 
     def update_subscriber_database(
             self,
@@ -118,7 +117,6 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             highest_rank=None,
             is_subscriber=None,
             is_authenticated=None,
-            is_monocle=None,
             flair=FlairModel
     ):
         """
@@ -127,7 +125,6 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         :param rsi_username:
         :param is_subscriber:
         :param is_authenticated:
-        :param is_monocle:
         :param flair FlairModel:
         :return:
         """
@@ -146,7 +143,6 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         subscriber.highest_rank = highest_rank
         subscriber.current = 1 if current else 0
         subscriber.months = 1 if current else 0
-        subscriber.is_monocle = 1 if is_monocle else 0
         subscriber.is_authenticated = 1 if is_authenticated else 0
         subscriber.current = 1 if is_subscriber else 0
         subscriber.flair = flair
@@ -193,7 +189,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
 
 class UpdateFlairTask(AbstractTaskType):
     """
-    Updates a users flair based on a choice from them (only available to is_monocle
+    Updates a users flair based on a choice from them
     MCP
     :license: MIT
     :messages used: 'flair_update_success', 'rank_not_high_enough'
@@ -201,7 +197,7 @@ class UpdateFlairTask(AbstractTaskType):
 
     def handle(self, requirements):
         """
-        Checks the db to see is_monocle = 1 if not checks for any updated RSI info and updates the db accordingly
+        Checks the db to see for any updated RSI info and updates the db accordingly
         Sets the flair based on the choice
         :param requirements:
         :return:
@@ -222,9 +218,19 @@ class UpdateFlairTask(AbstractTaskType):
             if subscriber.highest_rank >= flair.required_rank:
                 subscriber.flair = flair
                 self.bot.data_manager.add(subscriber)
-                self.send_message('flair_update_success', user_name=message.author, new_flair=flair.name, highest_rank=highest_rank)
+                self.send_message(
+                    'flair_update_success',
+                    user_name=message.author,
+                    new_flair=flair.name,
+                    highest_rank=highest_rank
+                )
             else:
-                self.send_message('rank_not_high_enough', user_name=message.author, new_flair=flair.name, highest_rank=highest_rank)
+                self.send_message(
+                    'rank_not_high_enough',
+                    user_name=message.author,
+                    new_flair=flair.name,
+                    highest_rank=highest_rank
+                )
         self.bot.data_manager.commit()
         return True
 
@@ -258,4 +264,6 @@ class UpdateDBTask(AbstractTaskType):
         Checks to see if it's the 15th
         :return bool:
         """
-        pass
+        if datetime.datetime.today().day == 15:
+            return True
+        return False
