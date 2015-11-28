@@ -33,6 +33,8 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     def handle(self, requirements):
         """
         Handle the messages
+
+        :param requirements:
         :return:
         """
         messages = requirements['messages']
@@ -121,11 +123,14 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     ):
         """
         Adds or updates subscribers
+
         :param redditor:
         :param rsi_username:
+        :param current:
+        :param highest_rank:
         :param is_subscriber:
         :param is_authenticated:
-        :param flair FlairModel:
+        :param flair:
         :return:
         """
         subscriber = self.bot.data_manager.query(
@@ -180,7 +185,8 @@ class AuthenticateSubscribersTask(AbstractTaskType):
     def authenticate_subscriber(self, subscriber=SubscriberModel):
         """
         Updates the DB, sets flair and sends message
-        :param subscriber SubscriberModel:
+
+        :param subscriber:
         :return:
         """
         subscriber.is_authenticated = 1
@@ -255,6 +261,7 @@ class UpdateDBTask(AbstractTaskType):
         """
         For every entry checks if subscriber and if monocle and updates the db if it has changed, lets the user know and
         offers flair. Also adds 1 to the months and if the months is now > 12 offer flair
+
         :param requirements:
         :return:
         """
@@ -263,6 +270,7 @@ class UpdateDBTask(AbstractTaskType):
     def requirements(self):
         """
         Checks to see if it's the 15th
+
         :return bool:
         """
         if datetime.datetime.today().day == 15:
