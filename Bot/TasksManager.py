@@ -123,8 +123,7 @@ class AbstractTaskType(object):
                 body = Template(template_body).render(template_values)
                 self.bot.reddit.send_message(user_name, template_body.subject, body)
             else:
-                # Todo uncomment below add username to information so the mods know who to contact
-                # raise MessageNotFoundException("Message with the name " + template_name + " not found")
+                raise MessageNotFoundException("Message with the name " + template_name + " not found")
                 pass
         return True
 
