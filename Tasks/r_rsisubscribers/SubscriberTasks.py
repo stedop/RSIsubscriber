@@ -144,6 +144,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         subscriber.current = 1 if current else 0
         subscriber.months = 1 if current else 0
         subscriber.is_authenticated = 1 if is_authenticated else 0
+        subscriber.is_monocle = 0
         subscriber.current = 1 if is_subscriber else 0
         subscriber.flair = flair
         self.bot.data_manager.add(subscriber)
