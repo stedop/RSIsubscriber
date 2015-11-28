@@ -14,7 +14,7 @@ today = datetime.date.today()
 logfile = "Logs/" + today.strftime('%d-%b-%Y') + ".log"
 logging.basicConfig(
     filename=logfile,
-    filemode="w+",
+    filemode="a+",
     level=logging.WARN,
     format=LOGFORMAT
 )
