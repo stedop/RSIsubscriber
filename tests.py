@@ -7,6 +7,10 @@ from Bot.TheBot import Bot
 from Bot.TasksManager import TaskManager
 from Tasks.r_rsisubscribers.MessageTestTasks import SendMessageTask
 from Bot.Exceptions import MessageNotFoundException
+import os
+
+
+BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
 """ init log """
 today = datetime.date.today()
@@ -28,7 +32,9 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
     tasks = [SendMessageTask]
-    myBot = Bot('rsi_config.ini', bot_logger)
+    myBot = Bot(BASEDIR, 'rsi_config.ini', bot_logger)
+    myBot.logger.info(myBot.config.config_filename)
+    myBot.logger.info(myBot.BASEDIR + myBot.config.get('reddit.config_file'))
     task_manager = TaskManager(tasks, myBot)
     task_manager.run()
 
