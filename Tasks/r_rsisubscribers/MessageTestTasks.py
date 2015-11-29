@@ -27,4 +27,4 @@ class SendMessageTask(AbstractTaskType):
 
         for message in messages:
             self.bot.logger.debug(message.name)
-            self.send_message(message.name, 'dops', subscriber_name="MrChance", max_backer_status="Commander")
+            self.bot.send_message(message.name, 'dops', subscriber_name="MrChance", max_backer_status="Commander")

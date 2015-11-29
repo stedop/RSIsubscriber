@@ -54,7 +54,7 @@ class Bot:
             self.data_manager = None
 
         user_agent = (self.config.get("reddit.bot_name"))
-        handle = MultiprocessHandler()
+        handle = MultiprocessHandler('127.0.0.1', 65001)
 
         self.reddit = praw.Reddit(
             user_agent=user_agent,
