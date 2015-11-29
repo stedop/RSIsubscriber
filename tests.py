@@ -24,6 +24,7 @@ logging.basicConfig(
 logging.captureWarnings(True)
 bot_logger = logging.getLogger('TheBot')
 
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
     tasks = [SendMessageTask]
