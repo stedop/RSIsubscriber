@@ -10,7 +10,8 @@ MCP
 
 from Bot.TasksManager import AbstractTaskType
 from DataModels.MessagesModel import MessagesModel
-import datetime
+from DataModels.SubscriberModel import SubscriberModel
+from DataModels.FlairModel import FlairModel
 
 
 class SendMessageTask(AbstractTaskType):
@@ -19,10 +20,10 @@ class SendMessageTask(AbstractTaskType):
     """
 
     def requirements(self):
-        return True;
+        return True
 
     def handle(self, requirements):
         messages = self.bot.data_manager.query(MessagesModel).all()
 
         for message in messages:
-            self.send_message(message.name,'dops');
+            self.send_message(message.name, 'dops')
