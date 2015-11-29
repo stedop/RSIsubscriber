@@ -28,11 +28,11 @@ class ListPostsTask(AbstractTaskType):
         messages = requirements['messages']
 
         for message in messages:
-            if self.is_mod(message.author):
+            if self.bot.is_mod(message.author):
                 all_posts = self.api.get_all_posts()
-                self.send_message('list_posts', message.author, all_posts)
+                self.bot.send_message('list_posts', message.author, all_posts)
             else:
-                self.send_message('not_authorised', message.author)
+                self.bot.send_message('not_authorised', message.author)
         return True
 
     def requirements(self):
@@ -40,7 +40,7 @@ class ListPostsTask(AbstractTaskType):
         Get any messages to the bot which ask for a list
         :return:
         """
-        post_messages = self.match_unread('List Posts')
+        post_messages = self.bot.match_unread('List Posts')
         if post_messages:
             return {'messages': post_messages}
         return False
@@ -57,7 +57,7 @@ class CreatePostTask(AbstractTaskType):
         return True
 
     def requirements(self):
-        create_post_messages = self.match_unread('Create Post')
+        create_post_messages = self.bot.match_unread('Create Post')
         if create_post_messages:
             return {'messages': create_post_messages}
         return False

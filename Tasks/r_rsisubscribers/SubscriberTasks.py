@@ -40,7 +40,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             try:
                 is_subscribing = self.citizens_api.is_subscribing(message.body)
             except CitizenNotFoundException as not_found:
-                self.send_message('citizen_not_found', message.author)
+                self.bot.send_message('citizen_not_found', message.author)
                 self.bot.logger.exception(not_found)
                 continue
 
@@ -60,7 +60,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         Get Subscriber Messages
         :return:
         """
-        subscriber_messages = self.match_unread('Citizen')
+        subscriber_messages = self.bot.match_unread('Citizen')
         if subscriber_messages:
             return {'messages': subscriber_messages}
         return False
@@ -72,11 +72,11 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
 
         if is_authenticated:
             flair_id = 1
-            self.send_message('subscription_auth', message.author)
+            self.bot.send_message('subscription_auth', message.author)
         else:
-            self.send_message('subscription_not_auth', message.author)
+            self.bot.send_message('subscription_not_auth', message.author)
 
-        flair = self.set_flair(message.author, flair_id)
+        flair = self.bot.set_flair(message.author, flair_id)
         current = True
         self.update_subscriber_database(
             message.author,
@@ -89,7 +89,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         )
 
     def not_subscribing(self, message, flair_id):
-        flair = self.set_flair(message.author, flair_id)
+        flair = self.bot.set_flair(message.author, flair_id)
         is_subscribing = 0
         is_authenticated = self.citizens_api.is_authenticated(message.body)
         current = None
@@ -105,9 +105,14 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             flair
         )
         if is_authenticated:
-            self.send_message('no_subscription_auth', message.author, max_backer_status=highest_rank, subscriber_name=message.body)
+            self.bot.send_message(
+                'no_subscription_auth',
+                message.author,
+                max_backer_status=highest_rank,
+                subscriber_name=message.body
+            )
         else:
-            self.send_message('no_subscription_no_auth', message.author)
+            self.bot.send_message('no_subscription_no_auth', message.author)
 
     def update_subscriber_database(
             self,
@@ -189,7 +194,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
         """
         subscriber.is_authenticated = 1
         self.bot.data_manager.add(subscriber)
-        self.send_message('authentication_success', subscriber.reddit_username)
+        self.bot.send_message('authentication_success', subscriber.reddit_username)
 
 
 class UpdateFlairTask(AbstractTaskType):
@@ -223,14 +228,14 @@ class UpdateFlairTask(AbstractTaskType):
             if subscriber.highest_rank >= flair.required_rank:
                 subscriber.flair = flair
                 self.bot.data_manager.add(subscriber)
-                self.send_message(
+                self.bot.send_message(
                     'flair_update_success',
                     user_name=message.author,
                     new_flair=flair.name,
                     highest_rank=highest_rank
                 )
             else:
-                self.send_message(
+                self.bot.send_message(
                     'rank_not_high_enough',
                     user_name=message.author,
                     new_flair=flair.name,
@@ -244,7 +249,7 @@ class UpdateFlairTask(AbstractTaskType):
         Needs a message from the user with the subject Flair
         :return messages:
         """
-        flair_messages = self.match_unread('Flair')
+        flair_messages = self.bot.match_unread('Flair')
         if flair_messages:
             return {'messages': flair_messages}
         return False

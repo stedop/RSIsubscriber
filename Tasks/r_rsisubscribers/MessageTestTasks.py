@@ -24,10 +24,7 @@ class SendMessageTask(AbstractTaskType):
 
     def handle(self, requirements):
         messages = self.bot.data_manager.query(MessagesModel).all()
-        self.bot.logger.debug("All messages")
-        self.bot.logger.debug(messages)
 
         for message in messages:
-            self.bot.logger.debug("Message")
-            self.bot.logger.debug(message)
-            self.send_message(message.name, 'dops')
+            self.bot.logger.debug(message.name)
+            self.send_message(message.name, 'dops', subscriber_name="MrChance", max_backer_status="Commander")
