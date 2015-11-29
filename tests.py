@@ -14,7 +14,7 @@ BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
 """ init log """
 today = datetime.date.today()
-logfile = "Logs/" + today.strftime('%d-%b-%Y') + "_test.log"
+logfile = BASEDIR + "/Logs/" + today.strftime('%d-%b-%Y') + "_test.log"
 
 LOGFORMAT = '\n%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
 DATEFORMAT = '%Y-%m-%d %H:%M:%S'
@@ -27,7 +27,7 @@ logging.basicConfig(
 )
 logging.captureWarnings(True)
 bot_logger = logging.getLogger('TheBot')
-
+bot_logger.info(logfile);
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
