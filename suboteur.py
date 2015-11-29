@@ -10,7 +10,8 @@ from Bot.Exceptions import MessageNotFoundException
 import os
 
 
-BASEDIR = os.path.dirname(os.path.realpath(__file__))
+BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
+
 """ init log """
 today = datetime.date.today()
 logfile = BASEDIR + "/Logs/" + today.strftime('%d-%b-%Y') + ".log"
@@ -30,7 +31,7 @@ bot_logger = logging.getLogger('TheBot')
 """ Main """
 try:
     tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
-    myBot = Bot(BASEDIR + '/rsi_config.ini', bot_logger)
+    myBot = Bot(BASEDIR, 'rsi_config.ini', bot_logger)
     task_manager = TaskManager(tasks, myBot)
     task_manager.run()
 
