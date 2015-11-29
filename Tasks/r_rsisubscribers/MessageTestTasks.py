@@ -22,7 +22,7 @@ class SendMessageTask(AbstractTaskType):
         return True;
 
     def handle(self, requirements):
-        messages = MessagesModel.query.all()
+        messages = self.bot.data_manager.query(MessagesModel).all()
 
         for message in messages:
-            self.send_message(messages.name,'dops');
+            self.send_message(message.name,'dops');
