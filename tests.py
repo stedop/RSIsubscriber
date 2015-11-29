@@ -10,7 +10,7 @@ from Bot.Exceptions import MessageNotFoundException
 
 """ init log """
 today = datetime.date.today()
-logfile = "Logs/" + today.strftime('%d-%b-%Y') + ".log"
+logfile = "Logs/" + today.strftime('%d-%b-%Y') + "_test.log"
 
 LOGFORMAT = '\n%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
 DATEFORMAT = '%Y-%m-%d %H:%M:%S'
