@@ -20,8 +20,6 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     """
     Checks for messages with "Subscriber" and handles the result
     ~~~~~~~~~~~~~~~
-    MCP
-    :license: MIT
     :messages used: 'citizen_not_found',
                     'subscription_auth',
                     'subscription_not_auth',
@@ -107,7 +105,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             flair
         )
         if is_authenticated:
-            self.send_message('no_subscription_auth', message.author)
+            self.send_message('no_subscription_auth', message.author, max_backer_status=highest_rank, subscriber_name=message.body)
         else:
             self.send_message('no_subscription_no_auth', message.author)
 
