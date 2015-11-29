@@ -24,6 +24,7 @@ class SendMessageTask(AbstractTaskType):
 
     def handle(self, requirements):
         messages = self.bot.data_manager.query(MessagesModel).all()
+        self.bot.logger.debug(messages)
 
         for message in messages:
             self.bot.logger.debug(message)
