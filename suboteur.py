@@ -30,7 +30,7 @@ bot_logger = logging.getLogger('TheBot')
 """ Main """
 try:
     tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
-    myBot = Bot('rsi_config.ini', bot_logger)
+    myBot = Bot(BASEDIR + '/rsi_config.ini', bot_logger)
     task_manager = TaskManager(tasks, myBot)
     task_manager.run()
 
