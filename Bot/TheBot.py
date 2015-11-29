@@ -42,6 +42,8 @@ class Bot:
         self.BASEDIR = basedir
         self.config = ConfigManager(self.BASEDIR + config_file)
         self.logger = logger
+        self.logger.info(self.config.get('reddit.config_file'))
+        self.logger.info(self.BASEDIR + self.config.get('reddit.config_file'))
         if self.config.section_exists('database'):
             Session = sessionmaker()
             self.__db_engine = create_engine(
