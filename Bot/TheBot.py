@@ -29,16 +29,18 @@ class Bot:
     reddit = praw.Reddit
     logger = logging
     mod_list = []
+    BASEDIR = "./"
 
-    def __init__(self, BASEDIR, config_file, logger=logging):
+    def __init__(self, basedir, config_file, logger=logging):
         """
         Sets up th config manager, standard data manager and the praw connection
-        :param BASEDIR:
+        :param basedir:
         :param config_file:
         :param logger:
         :return:
         """
-        self.config = ConfigManager(BASEDIR + config_file)
+        self.BASEDIR = basedir
+        self.config = ConfigManager(self.BASEDIR + config_file)
         self.logger = logger
         if self.config.section_exists('database'):
             Session = sessionmaker()
@@ -62,7 +64,7 @@ class Bot:
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
             handle=handle,
-            config_file=BASEDIR + self.config.get('reddit.config_file')
+            config_file=self.BASEDIR + self.config.get('reddit.config_file')
         )
 
         if not self.reddit.refresh_access_information():
