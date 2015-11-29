@@ -7,10 +7,13 @@ from Bot.TheBot import Bot
 from Bot.TasksManager import TaskManager
 from Tasks.r_rsisubscribers.SubscriberTasks import CheckSubscriberMessagesTask, AuthenticateSubscribersTask
 from Bot.Exceptions import MessageNotFoundException
+import os
 
+
+BASEDIR = os.path.dirname(os.path.realpath(__file__))
 """ init log """
 today = datetime.date.today()
-logfile = "Logs/" + today.strftime('%d-%b-%Y') + ".log"
+logfile = BASEDIR + "/Logs/" + today.strftime('%d-%b-%Y') + ".log"
 
 LOGFORMAT = '\n%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
 DATEFORMAT = '%Y-%m-%d %H:%M:%S'
