@@ -27,7 +27,7 @@ class ConfigManager:
         :param config_filename:
         :return:
         """
-        self.config_filename = config_filename
+        self.config_filename = config_filename.decode('utf8')
         self.parser = configparser.ConfigParser()
         self.parser.BOOLEAN_STATES = {'1': True, '0': False}
         self.config = self.parser.read(self.config_filename)
