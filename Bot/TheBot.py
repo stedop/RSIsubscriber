@@ -108,7 +108,7 @@ class Bot:
                 self.logger.debug(template_values)
 
                 body = Template(
-                    message.body(
+                    message.body,
                     encoding_errors='ignore'
                 ).render(**template_values)
 
