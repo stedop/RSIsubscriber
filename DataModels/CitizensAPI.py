@@ -45,8 +45,8 @@ class CitizensAPI:
         c = pycurl.Curl()
         c.setopt(c.URL, request_uri)
         # Another stupid hack
-        # c.setopt(c.WRITEFUNCTION, buffer.write)
-        c.setopt(c.WRITEDATA, buffer)
+        c.setopt(c.WRITEFUNCTION, buffer.write)
+        # c.setopt(c.WRITEDATA, buffer)
         c.perform()
         c.close()
         value = buffer.getvalue()
@@ -108,7 +108,6 @@ class CitizensAPI:
         :return:
         """
 
-
         citizen_info = self.find_user(citizen_name)
         rank = citizen_info.data.title
         if self.titles[rank] >= 128:
@@ -126,6 +125,7 @@ class CitizensAPI:
         :param citizen_name:
         :return:
         """
+
         try:
             citizen_info = self.find_user(citizen_name)
             link = "http://www.reddit.com/user/" + citizen_name
