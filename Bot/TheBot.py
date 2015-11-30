@@ -111,7 +111,7 @@ class Bot:
                     message.body,
                     input_encoding='utf-8',
                     output_encoding='utf-8',
-                    encoding_errors='replace'
+                    encoding_errors='ignore'
                 ).render(**template_values)
 
                 self.reddit.send_message(user_name, message.subject, body)
