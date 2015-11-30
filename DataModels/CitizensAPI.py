@@ -128,7 +128,7 @@ class CitizensAPI:
 
         try:
             citizen_info = self.find_user(citizen_name)
-            link = "http://www.reddit.com/user/" + citizen_name
+            link = "https://www.reddit.com/user/" + citizen_name
             link = re.escape(link)
             bio = str(citizen_info.data.bio)
             if bio.find(link):

@@ -69,9 +69,8 @@ class Bot:
             handle=handle,
             config_file=self.config.get('reddit.config_file')
         )
-        self.logger.warn(self.config.get('reddit.config_file'))
 
-        if not self.reddit.refresh_access_information():
+        if not self.reddit.refresh_access_information(update_session=True):
             raise RuntimeError
         # atexit.register(self.close_conns, self.r, self.data_manager)
 
