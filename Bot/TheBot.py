@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
+# encoding=utf8
 
 """
 TheBot - Acts as an accessor and builer for the the various tools we need, will probably be extended to3

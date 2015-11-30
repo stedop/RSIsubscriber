@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
+# encoding=utf8
 
+
+import sys
 import logging
 import datetime
 from Bot.TheBot import Bot
@@ -27,6 +30,7 @@ logging.basicConfig(
 )
 logging.captureWarnings(True)
 bot_logger = logging.getLogger('TheBot')
+bot_logger.debug(sys.getdefaultencoding());
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
