@@ -66,8 +66,7 @@ class Bot:
         self.reddit = praw.Reddit(
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
-            handle=handle,
-            config_file=self.config.get('reddit.config_file')
+            handle=handle
         )
         self.logger.warn(self.config.get('reddit.config_file'))
 
