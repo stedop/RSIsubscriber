@@ -12,7 +12,8 @@ from Tasks.r_rsisubscribers.MessageTestTasks import SendMessageTask
 from Bot.Exceptions import MessageNotFoundException
 import os
 
-
+reload(sys)
+sys.setdefaultencoding('utf8')
 BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
 """ init log """
