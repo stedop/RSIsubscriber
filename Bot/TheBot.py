@@ -61,14 +61,15 @@ class Bot:
             self.data_manager = None
 
         user_agent = (self.config.get("reddit.bot_name"))
-        handle = MultiprocessHandler('127.0.0.1', 65001)
+        handle = MultiprocessHandler('127.0.0.1', 65000)
 
         self.reddit = praw.Reddit(
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
             handle=handle,
-            config_file=self.BASEDIR + self.config.get('reddit.config_file')
+            config_file=self.config.get('reddit.config_file')
         )
+        self.logger.warn(self.config.get('reddit.config_file'))
 
         if not self.reddit.refresh_access_information():
             raise RuntimeError
