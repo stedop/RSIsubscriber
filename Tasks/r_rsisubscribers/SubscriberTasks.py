@@ -164,7 +164,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
     ~~~~~~~~~~~~~~~
     MCP
     :license: MIT
-    :messages used: 'authentication_success'
+    :messages used: 'authorisation_success'
     """
     def handle(self, requirements):
         citizen_api = CitizensAPI()
@@ -194,7 +194,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
         """
         subscriber.is_authenticated = 1
         self.bot.data_manager.add(subscriber)
-        self.bot.send_message('authentication_success', subscriber.reddit_username)
+        self.bot.send_message('authorisation_success', subscriber.reddit_username)
 
 
 class UpdateFlairTask(AbstractTaskType):
