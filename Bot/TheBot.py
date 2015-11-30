@@ -109,6 +109,8 @@ class Bot:
 
                 body = Template(
                     message.body,
+                    input_encoding='utf-8',
+                    output_encoding='utf-16',
                     encoding_errors='ignore'
                 ).render(**template_values)
 
