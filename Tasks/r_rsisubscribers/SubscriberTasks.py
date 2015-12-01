@@ -178,7 +178,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
         return True
 
     def requirements(self):
-        awaiting = self.bot.data_manager.query(SubscriberModel).filter(SubscriberModel.is_authenticated == 1)
+        awaiting = self.bot.data_manager.query(SubscriberModel).filter(SubscriberModel.is_authenticated == 0)
 
         requirements = {
             "awaiting": awaiting,
