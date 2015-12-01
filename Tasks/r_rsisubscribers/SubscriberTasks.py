@@ -109,7 +109,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
             self.bot.send_message(
                 'no_subscription_auth',
                 message.author,
-                max_backer_status=highest_rank,
+                max_backer_status=self.citizens_api.get_title(highest_rank),
                 subscriber_name=message.body
             )
         else:
@@ -233,14 +233,14 @@ class UpdateFlairTask(AbstractTaskType):
                     'flair_update_success',
                     user_name=message.author,
                     new_flair=flair.name,
-                    highest_rank=highest_rank
+                    highest_rank=citizens_api.get_title(highest_rank)
                 )
             else:
                 self.bot.send_message(
                     'rank_not_high_enough',
                     user_name=message.author,
                     new_flair=flair.name,
-                    highest_rank=highest_rank
+                    highest_rank=citizens_api.get_title(highest_rank)
                 )
         self.bot.data_manager.commit()
         return True

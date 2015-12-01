@@ -141,3 +141,9 @@ class CitizensAPI:
             return False
         except ValueError:
             return False
+
+    def get_title(self, rank):
+        for title, level in self.titles.items():
+            if level == rank:
+                return rank
+        return False
