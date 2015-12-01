@@ -67,7 +67,7 @@ class Bot:
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
             handle=handle,
-            config_file=self.config.get('reddit.config_file')
+            config_file=self.BASEDIR + self.config.get('reddit.config_file')
         )
 
         if not self.reddit.refresh_access_information(update_session=True):
