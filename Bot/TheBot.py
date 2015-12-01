@@ -63,6 +63,8 @@ class Bot:
         user_agent = (self.config.get("reddit.bot_name"))
         handle = MultiprocessHandler('127.0.0.1', 65000)
 
+        self.logger.warn(self.BASEDIR + self.config.get('reddit.config_file'))
+
         self.reddit = praw.Reddit(
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
