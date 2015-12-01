@@ -9,10 +9,9 @@ Links for Posts
 :author: Stephen Dop
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from DataModels import Base
-
 
 class LinksModel(Base):
     __tablename__ = 'rsisubs_post_links'

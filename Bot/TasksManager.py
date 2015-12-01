@@ -9,7 +9,7 @@ Tasks management and definition
 """
 
 from abc import ABCMeta, abstractmethod
-from Bot.TheBot import Bot
+from Bot.TheBot import BNBot
 
 
 class TaskManager:
@@ -20,7 +20,7 @@ class TaskManager:
     tasks = []
     __current_task = []
 
-    def __init__(self, tasks, bot=Bot):
+    def __init__(self, tasks, bot=BNBot):
         """
 
         :param tasks:
@@ -65,7 +65,7 @@ class AbstractTaskType(object):
     __metaclass__ = ABCMeta
 
     bot = None
-    def __init__(self, bot=Bot):
+    def __init__(self, bot=BNBot):
         """
         Sets the bot and gets the mod list
 

@@ -3,16 +3,16 @@
 
 import logging
 import datetime
-from Bot.TheBot import Bot
-from Bot.TasksManager import TaskManager
+from Bot import BNBot
+from Bot import TaskManager
+from Bot import MessageNotFoundException
 from Tasks.r_rsisubscribers.SubscriberTasks import CheckSubscriberMessagesTask, AuthenticateSubscribersTask
-from Bot.Exceptions import MessageNotFoundException
 import os
 
-
+""" Base directory setup """
 BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
-""" dev Contect """
+""" dev Contact """
 dev = 'dops <dopstephen@gmail.com>'
 
 """ init log """
@@ -24,7 +24,7 @@ DATEFORMAT = '%Y-%m-%d %H:%M:%S'
 logging.basicConfig(
     filename=logfile,
     filemode="a",
-    level=logging.WARN,
+    level=logging.WARNING,
     format=LOGFORMAT,
     datefmt=DATEFORMAT
 )
@@ -34,12 +34,11 @@ bot_logger = logging.getLogger('TheBot')
 """ Config File """
 config_file = 'rsi_config.ini'
 
-""" Tasks """
-tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
-
 """ Main """
 try:
-    bot = Bot(BASEDIR, config_file, bot_logger)
+    """ Tasks """
+    tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
+    bot = BNBot(BASEDIR, config_file, bot_logger)
     task_manager = TaskManager(tasks, bot)
     task_manager.run()
 

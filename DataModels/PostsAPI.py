@@ -10,16 +10,16 @@ it's also going to get scheduled posts from the db
 :author: Stephen Dop
 """
 
-from Bot.TheBot import Bot
-from DataModels.PostModel import PostModel
+from Bot import BNBot
+from DataModels import PostModel
 from datetime import datetime
 from sqlalchemy import func
 
-
+# TODO FIND A WAY TO DECOUPLE THIS FROM THE BOT
 class PostsAPI():
-    __bot = Bot
+    __bot = BNBot
 
-    def __init__(self, bot=Bot):
+    def __init__(self, bot=BNBot):
         self.__bot = bot
 
     def get_all_posts(self):

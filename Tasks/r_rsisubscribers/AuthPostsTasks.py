@@ -8,8 +8,7 @@ Tasks Relating to Auto Posts
 :author: ste
 """
 
-from Bot.TasksManager import AbstractTaskType
-from DataModels.PostsAPI import PostsAPI
+from Bot import AbstractTaskType
 import re
 
 

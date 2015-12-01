@@ -16,6 +16,7 @@ def cleanup(parser, config_filename):
         with open(config_filename, 'w') as configfile:
             parser.write(configfile)
 
+
 class ConfigManager:
     parser = configparser.ConfigParser
     config_filename = ""

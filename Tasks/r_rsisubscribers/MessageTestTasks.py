@@ -8,11 +8,8 @@ MCP
 :license: MIT
 """
 
-from Bot.TasksManager import AbstractTaskType
-from DataModels.MessagesModel import MessagesModel
-from DataModels.SubscriberModel import SubscriberModel
-from DataModels.FlairModel import FlairModel
-
+from Bot import AbstractTaskType
+from DataModels import MessagesModel
 
 class SendMessageTask(AbstractTaskType):
     """

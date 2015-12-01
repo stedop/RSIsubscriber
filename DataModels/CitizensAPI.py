@@ -7,13 +7,15 @@ citizens
 Wrapper for the RSI subs APi
 :license: MIT
 """
-
-import pycurl
 from io import BytesIO
-import json
 from collections import namedtuple
+from DataModels import CitizenNotFoundException
 import re
-from Bot.Exceptions import CitizenNotFoundException
+import json
+import pycurl
+from logging import getLogger
+
+log = getLogger("TheBot")
 
 class CitizensAPI:
     base_href = "http://sc-api.com/"
@@ -63,18 +65,21 @@ class CitizensAPI:
             request_uri = "{}?api_source=cache&system=accounts&action=full_profile&target_id={}"\
                 .format(self.base_href, citizen_name)
             raw_response = self.send_request(request_uri).decode("iso-8859-1")
+
             data = json.loads(
                 raw_response,
                 object_hook=lambda d: namedtuple(
                     'citizen_info',
                     d.keys()
                 )
-                (*d.values())
+                (
+                    *d.values()
+                 )
             )
-            self.searches[citizen_name] = data
 
-            if 'query_status' in data and data.query_status == "failed":
-                raise CitizenNotFoundException
+            self.searches[citizen_name] = data
+            if hasattr(data.request_stats, 'query_status') and data.request_stats.query_status == "failed":
+                raise CitizenNotFoundException("Citizen " + citizen_name + " not found")
         return self.searches[citizen_name]
 
     def is_subscribing(self, citizen_name):

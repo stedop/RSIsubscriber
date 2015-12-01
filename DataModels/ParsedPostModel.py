@@ -16,7 +16,7 @@ import datetime
 
 
 class ParsedPostModel(Base):
-    __tablename__ = 'rsisubs_post_links'
+    __tablename__ = 'rsisubs_parsed_posts'
 
     id = Column(Integer, primary_key=True)
     post_id = Column(Integer, ForeignKey('rsisubs_posts.id'))

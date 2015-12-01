@@ -6,10 +6,10 @@
 import sys
 import logging
 import datetime
-from Bot.TheBot import Bot
+from Bot.TheBot import BNBot
 from Bot.TasksManager import TaskManager
 from Tasks.r_rsisubscribers.MessageTestTasks import SendMessageTask
-from Bot.Exceptions import MessageNotFoundException
+from Bot.MessageExceptions import MessageNotFoundException
 import os
 
 reload(sys)
@@ -36,7 +36,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
     tasks = [SendMessageTask]
-    myBot = Bot(BASEDIR, 'rsi_config.ini', bot_logger)
+    myBot = BNBot(BASEDIR, 'rsi_config.ini', bot_logger)
     task_manager = TaskManager(tasks, myBot)
     task_manager.run()
 

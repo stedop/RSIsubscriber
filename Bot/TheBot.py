@@ -11,19 +11,19 @@ Todo add a template manager
 MCP
 :license: MIT
 """
-from Bot.ConfigManager import ConfigManager
+from Bot import ConfigManager
+from Bot import MessageNotFoundException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, session
 from praw.handlers import MultiprocessHandler
-from DataModels.MessagesModel import MessagesModel
-from DataModels.FlairModel import FlairModel
+from DataModels import MessagesModel
+from DataModels import FlairModel
 from mako.template import Template
-from Bot.Exceptions import MessageNotFoundException
 import praw
 import logging
 
 
-class Bot:
+class BNBot:
     config = ConfigManager
     data_manager = session.Session
     __db_engine = create_engine
@@ -62,9 +62,6 @@ class Bot:
 
         user_agent = (self.config.get("reddit.bot_name"))
         handle = MultiprocessHandler('127.0.0.1', 65000)
-
-        self.logger.warn(self.BASEDIR + self.config.get('reddit.config_file'))
-
         self.reddit = praw.Reddit(
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
@@ -108,13 +105,12 @@ class Bot:
                         ).first()
             if message:
                 template_values.update(reddit_username=user_name)
-                self.logger.debug(template_values)
-
                 body = Template(
                     message.body.decode('utf8'),
                     input_encoding='utf8',
                     output_encoding='utf8',
-                    encoding_errors='ignore'
+                    encoding_errors='ignore',
+                    strict_undefined=True
                 ).render(**template_values)
 
                 self.reddit.send_message(user_name, message.subject, body)

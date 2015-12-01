@@ -8,11 +8,11 @@ MCP
 :license: MIT
 """
 
-from Bot.TasksManager import AbstractTaskType
-from DataModels.CitizensAPI import CitizensAPI
-from DataModels.SubscriberModel import SubscriberModel
-from DataModels.FlairModel import FlairModel
-from Bot.Exceptions import CitizenNotFoundException
+from Bot import AbstractTaskType
+from DataModels import CitizenNotFoundException
+from DataModels import CitizensAPI
+from DataModels import SubscriberModel
+from DataModels import FlairModel
 import datetime
 
 
