@@ -10,3 +10,5 @@ python:
 matrix:
   allow_failures:
     - python: nightly
+sudo: false
+install: pip install sqlalchemy praw configparser
