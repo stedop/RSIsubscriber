@@ -32,7 +32,7 @@ logging.captureWarnings(True)
 bot_logger = logging.getLogger('TheBot')
 
 """ Config File """
-config_file = BASEDIR, 'rsi_config.ini'
+config_file = 'rsi_config.ini'
 
 """ Tasks """
 tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
