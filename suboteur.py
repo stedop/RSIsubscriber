@@ -12,6 +12,9 @@ import os
 
 BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
+""" dev Contect """
+dev = 'dops <dopstephen@gmail.com>'
+
 """ init log """
 today = datetime.date.today()
 logfile = BASEDIR + "/Logs/" + today.strftime('%d-%b-%Y') + ".log"
@@ -28,11 +31,16 @@ logging.basicConfig(
 logging.captureWarnings(True)
 bot_logger = logging.getLogger('TheBot')
 
+""" Config File """
+config_file = BASEDIR, 'rsi_config.ini'
+
+""" Tasks """
+tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
+
 """ Main """
 try:
-    tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
-    myBot = Bot(BASEDIR, 'rsi_config.ini', bot_logger)
-    task_manager = TaskManager(tasks, myBot)
+    bot = Bot(config_file, bot_logger)
+    task_manager = TaskManager(tasks, bot)
     task_manager.run()
 
 except MessageNotFoundException as message_not_found:
