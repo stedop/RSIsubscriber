@@ -66,7 +66,7 @@ class BNBot:
             user_agent=user_agent,
             log_requests=self.config.get('reddit.log_requests'),
             handle=handle,
-            config_file=self.BASEDIR + self.config.get('reddit.config_file')
+            site_name=self.config.get('reddit.site_name')
         )
 
         if not self.reddit.refresh_access_information(update_session=True):
