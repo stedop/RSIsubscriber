@@ -70,9 +70,9 @@ class Bot:
             config_file=self.config.get('reddit.config_file')
         )
 
-        if not self.reddit.refresh_access_information(update_session=True):
-            raise RuntimeError
-        # atexit.register(self.close_conns, self.r, self.data_manager)
+        #if not self.reddit.refresh_access_information(update_session=True):
+        #    raise RuntimeError
+        atexit.register(self.close_conns, self.reddit, self.data_manager)
 
         for mod in self.reddit.get_subreddit(self.config.get("reddit.subreddit")).get_moderators():
             self.mod_list.append(mod.name)
@@ -145,4 +145,13 @@ class Bot:
         if user_name in self.mod_list:
             return True
 
+        return False
+
+    def close_conns(self, reddit, data):
+        """
+
+        :param reddit:
+        :param data:
+        :return:
+        """
         return False
