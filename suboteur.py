@@ -39,7 +39,7 @@ tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
 
 """ Main """
 try:
-    bot = Bot(config_file, bot_logger)
+    bot = Bot(BASEDIR, config_file, bot_logger)
     task_manager = TaskManager(tasks, bot)
     task_manager.run()
 
