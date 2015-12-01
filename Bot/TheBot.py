@@ -83,10 +83,13 @@ class BNBot:
         :param subject:
         :return:
         """
-        messages = self.reddit.get_unread(
-            [message for message in self.reddit.get_unread(limit=None) if message.subject == subject]
-        )
-        return messages
+        messages = [message for message in self.reddit.get_unread(limit=None) if message.subject == subject]
+        self.logger.debug(str(sum(1 for i in messages)) + " message where subject is " + subject)
+        if sum(1 for i in messages) != 0:
+            return messages
+
+        self.logger.debug("RETURNING FALSE IN MATCH_UNREAD")
+        return False
 
     def send_message(self, template_name=None, user_name=None, **template_values):
         """

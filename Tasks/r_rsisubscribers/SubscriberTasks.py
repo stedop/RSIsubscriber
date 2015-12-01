@@ -62,6 +62,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
         """
         subscriber_messages = self.bot.match_unread('Citizen')
         if subscriber_messages:
+            self.bot.logger.debug(subscriber_messages)
             return {'messages': subscriber_messages}
         return False
 

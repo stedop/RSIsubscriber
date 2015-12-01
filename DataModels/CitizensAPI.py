@@ -42,7 +42,7 @@ class CitizensAPI:
 
     def send_request(self, request_uri):
         # Hack to work around python 2.4
-        # request_uri = str(request_uri.encode('utf-8'))
+        request_uri = str(request_uri.encode('utf-8'))
         buffer = BytesIO()
         c = pycurl.Curl()
         c.setopt(c.URL, request_uri)
