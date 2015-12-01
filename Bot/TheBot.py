@@ -41,7 +41,7 @@ class Bot:
         :return:
         """
         self.BASEDIR = basedir
-        self.config = ConfigManager(self.BASEDIR + config_file)
+        self.config = ConfigManager(config_file)
         self.logger = logger
         self.logger.info(self.config.get('reddit.config_file'))
         self.logger.info(self.BASEDIR + self.config.get('reddit.config_file'))
