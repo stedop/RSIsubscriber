@@ -20,7 +20,7 @@ dev = 'dops <dopstephen@gmail.com>'
 
 """ init log """
 today = datetime.date.today()
-logfile = BASEDIR + "/Logs/" + today.strftime('%d-%b-%Y') + ".log"
+logfile = BASEDIR + "/Logs/Suboteur/" + today.strftime('%d-%b-%Y') + ".log"
 
 LOGFORMAT = '\n%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
 DATEFORMAT = '%Y-%m-%d %H:%M:%S'
