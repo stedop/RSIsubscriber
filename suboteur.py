@@ -6,7 +6,10 @@ import datetime
 from Bot import BNBot
 from Bot import TaskManager
 from Bot import MessageNotFoundException
-from Tasks.r_rsisubscribers.SubscriberTasks import CheckSubscriberMessagesTask, AuthenticateSubscribersTask
+from Tasks.r_rsisubscribers import CheckSubscriberMessagesTask
+from Tasks.r_rsisubscribers import AuthenticateSubscribersTask
+from Tasks.r_rsisubscribers import UpdateFlairTask
+from Tasks.r_rsisubscribers import UpdateDBTask
 import os
 
 """ Base directory setup """
@@ -37,7 +40,7 @@ config_file = 'rsi_config.ini'
 """ Main """
 try:
     """ Tasks """
-    tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask]
+    tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask, UpdateFlairTask, UpdateDBTask]
     bot = BNBot(BASEDIR, config_file, bot_logger)
     task_manager = TaskManager(tasks, bot)
     task_manager.run()
