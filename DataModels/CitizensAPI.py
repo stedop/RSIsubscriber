@@ -124,19 +124,20 @@ class CitizensAPI:
         rank = citizen_info.data.title
         return self.titles[rank]
 
-    def is_authenticated(self, citizen_name):
+    def is_authenticated(self, citizen_name, reddit_name):
         """
         Finds authentication Link
         :param citizen_name:
+        :param reddit_name:
         :return:
         """
 
         try:
             citizen_info = self.find_user(citizen_name)
-            link = "https://www.reddit.com/user/" + citizen_name
-            link = re.escape(link)
+
             bio = str(citizen_info.data.bio)
-            if bio.find(link):
+
+            if re.search(r"reddit.com/u(ser)?/" + reddit_name + "/?\s*(<br />)?\\n", bio, re.IGNORECASE):
                 return True
             return False
         except ValueError:
