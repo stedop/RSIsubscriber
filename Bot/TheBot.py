@@ -24,6 +24,7 @@ import logging
 import atexit
 import re
 
+
 class BNBot:
     config = ConfigManager
     data_manager = session.Session
@@ -53,7 +54,7 @@ class BNBot:
         else:
             self.data_manager = None
 
-        atexit.register(self.__close_conns())
+        # atexit.register(self.__close_conns())
 
     def match_unread(self, subject):
         """
