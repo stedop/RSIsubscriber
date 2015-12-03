@@ -21,7 +21,8 @@ from DataModels import FlairModel
 from mako.template import Template
 import praw
 import logging
-
+import atexit
+import re
 
 class BNBot:
     config = ConfigManager
@@ -43,38 +44,16 @@ class BNBot:
         self.BASEDIR = basedir
         self.config = ConfigManager(self.BASEDIR + config_file)
         self.logger = logger
-        self.logger.info(self.config.get('reddit.config_file'))
-        self.logger.info(self.BASEDIR + self.config.get('reddit.config_file'))
+
+        self.__setup_reddit_conn()
+        self.__get_mods()
+
         if self.config.section_exists('database'):
-            Session = sessionmaker()
-            self.__db_engine = create_engine(
-                "mysql+mysqldb://{}:{}@{}/{}".format(
-                    self.config.get("database.user"),
-                    self.config.get("database.pass"),
-                    self.config.get("database.host"),
-                    self.config.get("database.name")
-                ),
-                encoding='utf8'
-            )
-            self.data_manager = Session(bind=self.__db_engine)
+            self.__setup_data_manager()
         else:
             self.data_manager = None
 
-        user_agent = (self.config.get("reddit.bot_name"))
-        handle = MultiprocessHandler('127.0.0.1', 65000)
-        self.reddit = praw.Reddit(
-            user_agent=user_agent,
-            log_requests=self.config.get('reddit.log_requests'),
-            handle=handle,
-            site_name=self.config.get('reddit.site_name')
-        )
-
-        if not self.reddit.refresh_access_information(update_session=True):
-            raise RuntimeError
-        #atexit.register(self.close_conns, self.reddit, self.data_manager)
-
-        for mod in self.reddit.get_subreddit(self.config.get("reddit.subreddit")).get_moderators():
-            self.mod_list.append(mod.name)
+        atexit.register(self.__close_conns())
 
     def match_unread(self, subject):
         """
@@ -83,12 +62,14 @@ class BNBot:
         :param subject:
         :return:
         """
-        messages = [message for message in self.reddit.get_unread(limit=None) if message.subject == subject]
-        self.logger.debug(str(sum(1 for i in messages)) + " message where subject is " + subject)
+
+        messages = [
+            message for message in self.reddit.get_unread(limit=None)
+            if re.match(subject, message.subject, re.IGNORECASE)
+            ]
         if sum(1 for i in messages) != 0:
             return messages
 
-        self.logger.debug("RETURNING FALSE IN MATCH_UNREAD")
         return False
 
     def send_message(self, template_name=None, user_name=None, **template_values):
@@ -100,12 +81,12 @@ class BNBot:
         :return:
         """
         if template_name:
-            self.logger.info("Template name: " + template_name)
             message = self.data_manager.query(
                             MessagesModel
                         ).filter(
                             MessagesModel.name == template_name
                         ).first()
+
             if message:
                 template_values.update(reddit_username=user_name)
                 body = Template(
@@ -119,7 +100,6 @@ class BNBot:
                 self.reddit.send_message(user_name, message.subject, body)
             else:
                 raise MessageNotFoundException("Message with the name " + template_name + " not found")
-                pass
         return True
 
     def set_flair(self, user_name, flair_id):
@@ -143,16 +123,60 @@ class BNBot:
         :param user_name:
         :return:
         """
-        if user_name in self.mod_list:
+        if len([mod for mod in self.mod_list if mod == str(user_name)]) > 0:
             return True
 
         return False
 
-    def close_conns(self, reddit, data):
+    def __get_mods(self):
         """
+        Gets all of the mods for the subreddit
 
-        :param reddit:
-        :param data:
         :return:
         """
-        return False
+        for mod in self.reddit.get_subreddit(self.config.get("reddit.subreddit")).get_moderators():
+            self.mod_list.append(mod.name)
+
+    def __setup_data_manager(self):
+        """
+        Sets up the data_manager
+
+        :return:
+        """
+        Session = sessionmaker()
+        self.__db_engine = create_engine(
+            "mysql+mysqldb://{}:{}@{}/{}".format(
+                self.config.get("database.user"),
+                self.config.get("database.pass"),
+                self.config.get("database.host"),
+                self.config.get("database.name")
+            ),
+            encoding='utf8'
+        )
+        self.data_manager = Session(bind=self.__db_engine)
+
+    def __setup_reddit_conn(self):
+        """
+        Inits the reddit connection
+
+        :return:
+        """
+        user_agent = (self.config.get("reddit.bot_name"))
+        handle = MultiprocessHandler('127.0.0.1', 65000)
+        self.reddit = praw.Reddit(
+            user_agent=user_agent,
+            log_requests=self.config.get('reddit.log_requests'),
+            handle=handle,
+            site_name=self.config.get('reddit.site_name')
+        )
+
+        if not self.reddit.refresh_access_information(update_session=True):
+            raise RuntimeError
+
+    def __close_conns(self):
+        """
+        Closes all connections
+
+        :return:
+        """
+        self.data_manager.close()
