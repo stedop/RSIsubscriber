@@ -63,7 +63,9 @@ class BNBot:
         :param subject:
         :return:
         """
-
+        self.logger.debug("SUBJECT = " + str(subject))
+        self.logger.debug("MATCH = " + str([message for message in self.reddit.get_unread(limit=None)
+            if re.match(subject, message.subject, re.IGNORECASE)]))
         messages = [
             message for message in self.reddit.get_unread(limit=None)
             if re.match(subject, message.subject, re.IGNORECASE)
