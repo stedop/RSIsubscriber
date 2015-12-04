@@ -11,6 +11,7 @@ MCP
 from Bot.TasksManager import AbstractTaskType
 import datetime
 import urllib2
+import re
 
 """
 Get private messages and update reddit user flair with RSI profile name.
@@ -19,11 +20,13 @@ class ConfirmCitizenTask(AbstractTaskType):
 
 	def handle(self, requirements):
 		messages = requirements['messages']
-		subreddit = self.bot.config.get('reddit.subreddit')
+		subreddit_name = self.bot.config.get('reddit.subreddit')
+		subreddit = self.bot.reddit.get_subreddit(subreddit_name)
+		
 		for message in messages:
 			try:
 				author = str(message.author)
-				current_flair = self.bot.reddit.get_flair(subreddit, author)
+				current_flair = self.bot.reddit.get_flair(subreddit_name, author)
 
 				# only set flair if author doesn't have existing flair
 				if current_flair and current_flair["flair_text"]:
@@ -31,7 +34,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 					self.bot.reddit.send_message(message.author, "starcitizen_trades bot: problem with your flair request", "Sorry, it appears your flair was already set previously. If you have a problem with your existing flair then please [click here to message the mods](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades).")
 					return
 
-				bodylines = body.splitlines()
+				bodylines = message.body.splitlines()
 
 				# only recognize well-formed message requests
 				if not len(bodylines) > 0:
