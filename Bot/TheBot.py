@@ -21,7 +21,7 @@ from DataModels import FlairModel
 from mako.template import Template
 import praw
 import logging
-import atexit
+#import atexit
 import re
 
 
@@ -114,8 +114,14 @@ class BNBot:
         :return:
         """
         flair = self.data_manager.query(FlairModel).get(flair_id)
+
+        if self.is_mod(user_name):
+            css_class = flair.css_class + " mod"
+        else:
+            css_class = flair.css_class
+
         if flair:
-            self.reddit.set_flair(self.config.get("reddit.subreddit"), user_name, flair.text, flair.css_class)
+            self.reddit.set_flair(self.config.get("reddit.subreddit"), user_name, flair.text, css_class)
             return flair
 
         return False
@@ -148,11 +154,11 @@ class BNBot:
         """
         Session = sessionmaker()
         self.__db_engine = create_engine(
-            "mysql+mysqldb://{}:{}@{}/{}".format(
-                self.config.get("database.user"),
-                self.config.get("database.pass"),
-                self.config.get("database.host"),
-                self.config.get("database.name")
+            "mysql+mysqldb://{user}:{password}@{host}/{db_name}".format(
+                user=self.config.get("database.user"),
+                password=self.config.get("database.pass"),
+                host=self.config.get("database.host"),
+                db_name=self.config.get("database.name")
             ),
             encoding='utf8'
         )
