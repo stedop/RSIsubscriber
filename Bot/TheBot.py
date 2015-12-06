@@ -152,7 +152,7 @@ class BNBot(object):
 
         :return:
         """
-        Session = sessionmaker()
+        session = sessionmaker()
         self.__db_engine = create_engine(
             "mysql+mysqldb://{user}:{password}@{host}/{db_name}".format(
                 user=self.config.get_value("database.user"),
@@ -162,7 +162,7 @@ class BNBot(object):
             ),
             encoding='utf8'
         )
-        self.data_manager = Session(bind=self.__db_engine)
+        self.data_manager = session(bind=self.__db_engine)
 
     def __setup_reddit_conn(self):
         """
