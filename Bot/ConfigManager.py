@@ -49,9 +49,6 @@ class ConfigManager(object):
         :return:
         """
         steps = key_name.split('.')
-        if len(steps) == 1:
-            return self.parser.get(steps[0], fallback=False)
-
         return self.parser.get(steps[0], steps[1], fallback=False)
 
     def set_value(self, key_name, value=""):
