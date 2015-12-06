@@ -63,8 +63,8 @@ class CitizensAPI(object):
         :return string
         """
         if citizen_name not in self.searches.keys():
-            request_uri = "{}?api_source=cache&system=accounts&action=full_profile&target_id={}"\
-                .format(self.base_href, citizen_name)
+            request_uri = "{url}?api_source=cache&system=accounts&action=full_profile&target_id={citizen_id}"\
+                .format(url=self.base_href, citizen_id=citizen_name)
             raw_response = self.send_request(request_uri).decode("iso-8859-1")
 
             data = json.loads(
