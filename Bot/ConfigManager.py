@@ -12,12 +12,19 @@ import configparser
 import atexit
 
 
-def cleanup(parser, config_filename):
-        with open(config_filename, 'w') as configfile:
-            parser.write(configfile)
+def cleanup(parser=configparser.ConfigParser):
+    """
 
+    :param parser:
+    :return:
+    """
+    if parser:
+        parser = None
 
 class ConfigManager(object):
+    """
+    Config manager for the Bot, accepts all requests in dot notation
+    """
     parser = configparser.ConfigParser
     config_filename = ""
     config = []
@@ -32,7 +39,7 @@ class ConfigManager(object):
         self.parser = configparser.ConfigParser()
         self.parser.BOOLEAN_STATES = {'1': True, '0': False}
         self.config = self.parser.read(self.config_filename)
-        atexit.register(cleanup, self.parser, self.config_filename)
+        atexit.register(cleanup, self.parser)
 
     def get_value(self, key_name):
         """
@@ -47,14 +54,14 @@ class ConfigManager(object):
 
         return self.parser.get(steps[0], steps[1], fallback=False)
 
-    def set_value(self, keyn_ame, value=""):
+    def set_value(self, key_name, value=""):
         """
         Sets a config value or section
-        :param keyn_ame:
+        :param key_name:
         :param value:
         :return:
         """
-        steps = keyn_ame.split('.')
+        steps = key_name.split('.')
         if len(steps) == 1:
             self.parser.add_section(steps[0])
             return True
