@@ -11,9 +11,9 @@ Links for Posts
 
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from DataModels import Base
+from DataModels import base
 
-class LinksModel(Base):
+class LinksModel(base):
     __tablename__ = 'rsisubs_post_links'
 
     id = Column(Integer, primary_key=True)

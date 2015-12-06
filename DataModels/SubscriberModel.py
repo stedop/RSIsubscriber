@@ -3,10 +3,10 @@
 
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from DataModels import Base
+from DataModels import base
 
 
-class SubscriberModel(Base):
+class SubscriberModel(base):
     __tablename__ = 'rsisubs_subscribers'
 
     id = Column(Integer, primary_key=True)

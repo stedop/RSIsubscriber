@@ -3,10 +3,10 @@
 
 
 from sqlalchemy import Column, Integer, String
-from DataModels import Base
+from DataModels import base
 
 
-class MessagesModel(Base):
+class MessagesModel(base):
     __tablename__ = 'rsisubs_messages'
 
     id = Column(Integer, primary_key=True)

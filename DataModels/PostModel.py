@@ -12,11 +12,11 @@ Mod Generated Post Model
 from sqlalchemy import Column, Integer, String, DateTime, text, func
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy.orm.session import object_session
-from DataModels import Base
+from DataModels import base
 import datetime
 
 
-class PostModel(Base):
+class PostModel(base):
     __tablename__ = 'rsisubs_posts'
 
     _session = {}

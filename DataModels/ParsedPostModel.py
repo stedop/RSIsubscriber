@@ -11,11 +11,11 @@ Models need to be parsed and put together, this saves time on that, if it has be
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from DataModels import Base
+from DataModels import base
 import datetime
 
 
-class ParsedPostModel(Base):
+class ParsedPostModel(base):
     __tablename__ = 'rsisubs_parsed_posts'
 
     id = Column(Integer, primary_key=True)

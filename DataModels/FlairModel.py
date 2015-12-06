@@ -3,10 +3,10 @@
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from DataModels import Base
+from DataModels import base
 
 
-class FlairModel(Base):
+class FlairModel(base):
     __tablename__ = 'rsisubs_flair'
 
     id = Column(Integer, primary_key=True)
