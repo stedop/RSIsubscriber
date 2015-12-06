@@ -17,7 +17,7 @@ def cleanup(parser, config_filename):
             parser.write(configfile)
 
 
-class ConfigManager:
+class ConfigManager(object):
     parser = configparser.ConfigParser
     config_filename = ""
     config = []
@@ -34,27 +34,27 @@ class ConfigManager:
         self.config = self.parser.read(self.config_filename)
         atexit.register(cleanup, self.parser, self.config_filename)
 
-    def get(self, keyname):
+    def get_value(self, key_name):
         """
         Gets a config value using dot notation
         e.g. "reddit.subreddit"
-        :param keyname:
+        :param key_name:
         :return:
         """
-        steps = keyname.split('.')
+        steps = key_name.split('.')
         if len(steps) == 1:
-            return  self.parser.get(steps[0], fallback=False)
+            return self.parser.get(steps[0], fallback=False)
 
         return self.parser.get(steps[0], steps[1], fallback=False)
 
-    def set(self, keyname, value=""):
+    def set(self, keyn_ame, value=""):
         """
         Sets a config value or section
-        :param keyname:
+        :param keyn_ame:
         :param value:
         :return:
         """
-        steps = keyname.split('.')
+        steps = keyn_ame.split('.')
         if len(steps) == 1:
             self.parser.add_section(steps[0])
             return True

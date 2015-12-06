@@ -25,7 +25,7 @@ import logging
 import re
 
 
-class BNBot:
+class BNBot(object):
     config = ConfigManager
     data_manager = session.Session
     __db_engine = create_engine
@@ -113,7 +113,7 @@ class BNBot:
         :param flair_id:
         :return:
         """
-        flair = self.data_manager.query(FlairModel).get(flair_id)
+        flair = self.data_manager.query(FlairModel).get_value(flair_id)
 
         if self.is_mod(user_name):
             css_class = flair.css_class + " mod"
@@ -121,7 +121,7 @@ class BNBot:
             css_class = flair.css_class
 
         if flair:
-            self.reddit.set_flair(self.config.get("reddit.subreddit"), user_name, flair.text, css_class)
+            self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair.text, css_class)
             return flair
 
         return False
@@ -143,7 +143,7 @@ class BNBot:
 
         :return:
         """
-        for mod in self.reddit.get_subreddit(self.config.get("reddit.subreddit")).get_moderators():
+        for mod in self.reddit.get_subreddit(self.config.get_value("reddit.subreddit")).get_moderators():
             self.mod_list.append(mod.name)
 
     def __setup_data_manager(self):
@@ -155,10 +155,10 @@ class BNBot:
         Session = sessionmaker()
         self.__db_engine = create_engine(
             "mysql+mysqldb://{user}:{password}@{host}/{db_name}".format(
-                user=self.config.get("database.user"),
-                password=self.config.get("database.pass"),
-                host=self.config.get("database.host"),
-                db_name=self.config.get("database.name")
+                user=self.config.get_value("database.user"),
+                password=self.config.get_value("database.pass"),
+                host=self.config.get_value("database.host"),
+                db_name=self.config.get_value("database.name")
             ),
             encoding='utf8'
         )
@@ -170,13 +170,13 @@ class BNBot:
 
         :return:
         """
-        user_agent = (self.config.get("reddit.bot_name"))
+        user_agent = (self.config.get_value("reddit.bot_name"))
         handle = MultiprocessHandler('127.0.0.1', 65000)
         self.reddit = praw.Reddit(
             user_agent=user_agent,
-            log_requests=self.config.get('reddit.log_requests'),
+            log_requests=self.config.get_value('reddit.log_requests'),
             handle=handle,
-            site_name=self.config.get('reddit.site_name')
+            site_name=self.config.get_value('reddit.site_name')
         )
 
         if not self.reddit.refresh_access_information(update_session=True):

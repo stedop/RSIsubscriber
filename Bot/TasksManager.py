@@ -12,7 +12,7 @@ from abc import ABCMeta, abstractmethod
 from Bot.TheBot import BNBot
 
 
-class TaskManager:
+class TaskManager(object):
     """
     Task management service
     """

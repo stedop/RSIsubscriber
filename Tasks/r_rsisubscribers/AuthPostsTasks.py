@@ -9,6 +9,7 @@ Tasks Relating to Auto Posts
 """
 
 from Bot import AbstractTaskType
+from DataModels import PostModel
 import re
 
 
@@ -16,7 +17,6 @@ class ListPostsTask(AbstractTaskType):
     """
     Sends a list of all current active posts
     """
-    api = PostsAPI()
 
     def handle(self, requirements):
         """
@@ -25,11 +25,15 @@ class ListPostsTask(AbstractTaskType):
         :return:
         """
         messages = requirements['messages']
-
         for message in messages:
             if self.bot.is_mod(message.author):
-                all_posts = self.api.get_all_posts()
-                self.bot.send_message('list_posts', message.author, all_posts)
+                all_posts = self.bot.data_manager.query(PostModel).filter(PostModel.archived == 0).all()
+                self.bot.logger.debug(all_posts)
+                self.bot.logger.debug(len(all_posts))
+                if (len(all_posts) > 0):
+                    self.bot.send_message('list_posts', message.author, all_posts)
+                else:
+                    self.bot.send_message('no_posts', message.author, all_posts)
             else:
                 self.bot.send_message('not_authorised', message.author)
         return True

@@ -17,7 +17,8 @@ from logging import getLogger
 
 log = getLogger("TheBot")
 
-class CitizensAPI:
+
+class CitizensAPI(object):
     base_href = "http://sc-api.com/"
     searches = {}
     titles = {
@@ -95,7 +96,7 @@ class CitizensAPI:
             return True
         return False
 
-    def is_backer(self,citizen_name):
+    def is_backer(self, citizen_name):
         """
         Determines if the user is a backer
         :param citizen_name:
@@ -134,7 +135,6 @@ class CitizensAPI:
 
         try:
             citizen_info = self.find_user(citizen_name)
-
             bio = str(citizen_info.data.bio)
 
             if re.search(r"reddit.com/u(ser)?/" + reddit_name + "/?\s*(<br />)?\\n", bio, re.IGNORECASE):

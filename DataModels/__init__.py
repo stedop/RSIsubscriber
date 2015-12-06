@@ -1,6 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
-
 from DataModels.CetizenExceptions import CitizenNotFoundException
 from DataModels.CitizensAPI import CitizensAPI
 from DataModels.FlairModel import FlairModel

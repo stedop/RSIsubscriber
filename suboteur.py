@@ -10,7 +10,12 @@ from Tasks.r_rsisubscribers import CheckSubscriberMessagesTask
 from Tasks.r_rsisubscribers import AuthenticateSubscribersTask
 from Tasks.r_rsisubscribers import UpdateFlairTask
 from Tasks.r_rsisubscribers import UpdateDBTask
+from Tasks.r_rsisubscribers import ListPostsTask
 import os
+import requests.packages
+
+# fix for the server, due to not being able to apt-get install some packages and not being in control of the ssl certs
+requests.packages.urllib3.disable_warnings()
 
 """ Base directory setup """
 BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
@@ -27,7 +32,7 @@ DATEFORMAT = '%Y-%m-%d %H:%M:%S'
 logging.basicConfig(
     filename=logfile,
     filemode="a",
-    level=logging.WARNING,
+    level=logging.DEBUG,
     format=LOGFORMAT,
     datefmt=DATEFORMAT
 )
@@ -40,7 +45,13 @@ config_file = 'rsi_config.ini'
 """ Main """
 try:
     """ Tasks """
-    tasks = [CheckSubscriberMessagesTask, AuthenticateSubscribersTask, UpdateFlairTask, UpdateDBTask]
+    tasks = [
+        CheckSubscriberMessagesTask,
+        AuthenticateSubscribersTask,
+        UpdateFlairTask,
+        UpdateDBTask,
+        ListPostsTask
+    ]
     bot = BNBot(BASEDIR, config_file, bot_logger)
     task_manager = TaskManager(tasks, bot)
     task_manager.run()

@@ -68,7 +68,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
 
     def subscribing(self, message, flair_id):
         is_subscribing = True
-        is_authenticated = self.citizens_api.is_authenticated(message.body)
+        is_authenticated = self.citizens_api.is_authenticated(message.body, message.author)
         highest_rank = self.citizens_api.get_rank(message.body)
 
         if is_authenticated:
@@ -92,7 +92,7 @@ class CheckSubscriberMessagesTask(AbstractTaskType):
     def not_subscribing(self, message, flair_id):
         flair = self.bot.set_flair(message.author, flair_id)
         is_subscribing = 0
-        is_authenticated = self.citizens_api.is_authenticated(message.body)
+        is_authenticated = self.citizens_api.is_authenticated(message.body, message.author)
         current = None
         highest_rank = self.citizens_api.get_rank(message.body)
 
@@ -170,7 +170,7 @@ class AuthenticateSubscribersTask(AbstractTaskType):
     def handle(self, requirements):
         citizen_api = CitizensAPI()
         for awaiting in requirements['awaiting']:
-            if citizen_api.is_authenticated(awaiting.rsi_username):
+            if citizen_api.is_authenticated(awaiting.rsi_username. awaiting.reddit_username):
                 self.authenticate_subscriber(awaiting)
             else:
                 pass

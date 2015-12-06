@@ -20,7 +20,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 
 	def handle(self, requirements):
 		messages = requirements['messages']
-		subreddit_name = self.bot.config.get('reddit.subreddit')
+		subreddit_name = self.bot.config.get_value('reddit.subreddit')
 		subreddit = self.bot.reddit.get_subreddit(subreddit_name)
 		
 		for message in messages:
