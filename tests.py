@@ -36,8 +36,8 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 """ Main """
 try:
     tasks = [SendMessageTask]
-    myBot = BNBot(BASEDIR, 'rsi_config.ini', bot_logger)
-    task_manager = TaskManager(tasks, myBot)
+    test_bot = BNBot(BASEDIR, 'rsi_config.ini', bot_logger)
+    task_manager = TaskManager(tasks, test_bot)
     task_manager.run()
 
 except MessageNotFoundException as message_not_found:
