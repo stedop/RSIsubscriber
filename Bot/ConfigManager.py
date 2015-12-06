@@ -47,7 +47,7 @@ class ConfigManager(object):
 
         return self.parser.get(steps[0], steps[1], fallback=False)
 
-    def set(self, keyn_ame, value=""):
+    def set_value(self, keyn_ame, value=""):
         """
         Sets a config value or section
         :param keyn_ame:
