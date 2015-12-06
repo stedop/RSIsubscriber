@@ -63,8 +63,8 @@ class AbstractTaskType(object):
     Task Definition
     """
     __metaclass__ = ABCMeta
-
     bot = None
+
     def __init__(self, bot=BNBot):
         """
         Sets the bot and gets the mod list
@@ -75,7 +75,7 @@ class AbstractTaskType(object):
         self.bot = bot
 
     @abstractmethod
-    def handle(self, requirements):
+    def handle(self, *requirements):
         """
         Business logic of the task
 
