@@ -29,8 +29,8 @@ class ListPostsTask(AbstractTaskType):
             if self.bot.is_mod(message.author):
                 all_posts = self.bot.data_manager.query(PostModel).filter(PostModel.archived == 0).all()
                 self.bot.logger.debug(all_posts)
-                self.bot.logger.debug(len(all_posts))
-                if (len(all_posts) > 0):
+                self.bot.logger.debug(all_posts is False)
+                if all_posts is False:
                     self.bot.send_message('list_posts', message.author, all_posts)
                 else:
                     self.bot.send_message('no_posts', message.author, all_posts)

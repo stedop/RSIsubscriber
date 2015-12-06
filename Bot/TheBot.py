@@ -132,7 +132,7 @@ class BNBot(object):
         :param user_name:
         :return:
         """
-        if len([mod for mod in self.mod_list if mod == str(user_name)]) > 0:
+        if [mod for mod in self.mod_list if mod == str(user_name)] is False:
             return True
 
         return False
