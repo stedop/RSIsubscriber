@@ -3,11 +3,6 @@
 # encoding=utf8
 
 """
-TheBot - Acts as an accessor and builer for the the various tools we need, will probably be extended to3
-allow for different orm's or add standard api's
-
-Todo add a template manager
-~~~~~~~~~~~~~~~
 MCP
 :license: MIT
 """
@@ -21,11 +16,14 @@ from DataModels import FlairModel
 from mako.template import Template
 import praw
 import logging
-#import atexit
 import re
 
 
 class BNBot(object):
+    """
+    TheBot - Acts as an accessor and builder for the the various tools we need, will probably be extended to3
+    allow for different ORM's or add standard API's
+    """
     config = ConfigManager
     data_manager = session.Session
     __db_engine = create_engine
@@ -53,8 +51,6 @@ class BNBot(object):
             self.__setup_data_manager()
         else:
             self.data_manager = None
-
-        # atexit.register(self.__close_conns())
 
     def match_unread(self, subject):
         """
@@ -181,11 +177,3 @@ class BNBot(object):
 
         if not self.reddit.refresh_access_information(update_session=True):
             raise RuntimeError
-
-    def __close_conns(self):
-        """
-        Closes all connections
-
-        :return:
-        """
-        self.data_manager.close()
