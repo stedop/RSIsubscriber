@@ -1,5 +1,6 @@
-get_secret.py
+.idea
 praw.ini
 rsi_config.ini
+flairbot_config.ini
 Logs/*
 *~
