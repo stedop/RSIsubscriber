@@ -1,6 +1,5 @@
 language: python
 python:
-  - 2.7
   - 3.3
   - 3.4
   - 3.5
@@ -11,5 +10,5 @@ matrix:
   allow_failures:
     - python: nightly
 sudo: false
-install: pip install sqlalchemy praw configparser
+install: pip3 install sqlalchemy praw configparser
 script: tests.py
