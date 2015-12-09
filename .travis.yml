@@ -12,3 +12,4 @@ matrix:
     - python: nightly
 sudo: false
 install: pip install sqlalchemy praw configparser
+script: nosetests
