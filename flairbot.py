@@ -13,7 +13,7 @@ BASEDIR = os.path.dirname(os.path.realpath(__file__)) + "/"
 
 """ init log """
 today = datetime.date.today()
-logfile = BASEDIR + "/Logs/flairbot-" + today.strftime('%d-%b-%Y') + ".log"
+logfile = BASEDIR + "/Logs/flairbot/" + today.strftime('%d-%b-%Y') + ".log"
 
 LOGFORMAT = '\n%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
 DATEFORMAT = '%Y-%m-%d %H:%M:%S'
@@ -30,8 +30,8 @@ bot_logger = logging.getLogger('Flairbot')
 """ Main """
 try:
     tasks = [ConfirmCitizenTask]
-    myBot = BNBot(BASEDIR, 'flairbot_config.ini', bot_logger)
-    task_manager = TaskManager(tasks, myBot)
+    bot = BNBot(BASEDIR, 'flairbot_config.ini', bot_logger)
+    task_manager = TaskManager(tasks, bot)
     task_manager.run()
 
 except Exception as error:

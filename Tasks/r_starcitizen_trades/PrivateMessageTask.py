@@ -37,7 +37,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 				bodylines = message.body.splitlines()
 
 				# only recognize well-formed message requests
-				if not len(bodylines) > 0:
+				if not bodylines:
 					self.bot.logger.debug("** ERROR: [USERFLAIR]: improperly formatted flair request received from {0}".format(message.author))
 					self.bot.reddit.send_message(message.author, "starcitizen_trades bot: problem with your flair request", "Sorry, it appears your flair request isn't formatted correctly.  Did you follow the guidelines? Please ensure you followed all the steps correctly and try again. If you're still running into problems then please [click here to message the mods](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades).")
 					return
