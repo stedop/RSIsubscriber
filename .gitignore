@@ -4,3 +4,4 @@ rsi_config.ini
 flairbot_config.ini
 Logs/*
 *~
+*.pyc

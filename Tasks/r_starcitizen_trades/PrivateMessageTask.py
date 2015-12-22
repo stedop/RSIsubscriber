@@ -26,7 +26,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 		for message in messages:
 			try:
 				author = str(message.author)
-				current_flair = self.bot.reddit.get_flair(subreddit_name, author)
+				current_flair = self.bot.get_flair(subreddit_name, author)
 
 				# only set flair if author doesn't have existing flair
 				if current_flair and current_flair["flair_text"]:
@@ -90,6 +90,47 @@ class ConfirmCitizenTask(AbstractTaskType):
 	"""
 	def requirements(self):
 		messages = self.bot.match_unread('flair request')
+		if messages:
+			return {'messages': messages}
+		return False
+
+"""
+tradebot - Private message that indicates whether the user wants to show or hide their trade flair.
+"""
+class ShowHideFlairTask(AbstractTaskType):
+
+	def handle(self, requirements):
+		add_flair_names = []
+		remove_flair_names = []
+
+		messages = requirements['messages']
+
+		# Read through the messages.
+		for message in messages:
+			try:
+				if message.body == "show":
+					self.bot.data_manager.query(User).\
+						filter(User.user_id == message.author.name).update({User.flair_ind: '1'})
+					# Add the reddit name because we know we need to update it later.
+					if message.author.name not in add_flair_names:
+						add_flair_names.append(message.author.name)
+				elif message.body == "hide":
+					self.bot.data_manager.query(User).\
+						filter(User.user_id == message.author.name).update({User.flair_ind: '0'})
+					if message.author.name not in remove_flair_names:
+						remove_flair_names.append(message.author.name)
+
+			except Exception as e:
+				logger.exception("{}".format(datetime.utcnow()))
+				message.mark_as_read()
+
+		self.bot.data.update({'updated': add_flair_names})
+		self.bot.data.update({'removed': remove_flair_names})
+
+		return True
+
+	def requirements(self):
+		messages = self.bot.match_unread('+flair')
 		if messages:
 			return {'messages': messages}
 		return False
