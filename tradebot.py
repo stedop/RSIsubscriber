@@ -6,7 +6,7 @@ import datetime
 from Bot.TheBot import BNBot
 from Bot.TasksManager import TaskManager
 from Tasks.r_starcitizen_trades.PrivateMessageTask import ShowHideFlairTask
-import Tasks.r_starcitizen_trades.TradebotTask
+from Tasks.r_starcitizen_trades.TradebotTask import ParseTradesThreadTask, SaveDataTask, UpdateTradeFlairTask
 import os
 
 
