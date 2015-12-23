@@ -123,31 +123,31 @@ class BNBot(object):
 
         return False
 
-	def set_explicit_flair(self, user_name, flair, css_class = None):
-		"""
-		Sets a user flair based on the string passed in.
-		:param user_name:
-		:param flair:
-		:param css_class:
-		:return:
-		"""
-		if flair:
-			if css_class:
-				self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair, css_class)
-			else:
-				self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair)
+    def set_explicit_flair(self, user_name, flair, css_class = None):
+        """
+        Sets a user flair based on the string passed in.
+        :param user_name:
+        :param flair:
+        :param css_class:
+        :return:
+        """
+        if flair:
+            if css_class:
+                self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair, css_class)
+            else:
+                self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair)
 
-		return True
+        return True
 
-	def get_flair(self, user_name):
-		"""
-		Returns the current user flair.
-		:param user_name:
-		:return:
-		"""
-		flair = self.reddit.get_flair(self.config.get_value("reddit.subreddit"), user_name)
-		flair_text = flair["flair_text"]
-		return flair_text
+    def get_flair(self, user_name):
+        """
+        Returns the current user flair.
+        :param user_name:
+        :return:
+        """
+        flair = self.reddit.get_flair(self.config.get_value("reddit.subreddit"), user_name)
+        flair_text = flair["flair_text"]
+        return flair_text
 
     def is_mod(self, user_name):
         """
