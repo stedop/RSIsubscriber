@@ -208,5 +208,5 @@ class UpdateTradeFlairTask(AbstractTaskType):
 		finally:
 			self.bot.data_manager.close()
 
-	def handle(self):
+	def requirements(self):
 		return True
