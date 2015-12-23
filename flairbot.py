@@ -20,7 +20,7 @@ DATEFORMAT = '%Y-%m-%d %H:%M:%S'
 logging.basicConfig(
     filename=logfile,
     filemode="a",
-    level=logging.WARN,
+    level=logging.DEBUG,
     format=LOGFORMAT,
     datefmt=DATEFORMAT
 )
