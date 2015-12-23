@@ -26,7 +26,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 		for message in messages:
 			try:
 				author = str(message.author)
-				current_flair = self.bot.get_flair(subreddit_name, author)
+				current_flair = self.bot.get_flair(author.name)
 
 				# only set flair if author doesn't have existing flair
 				if current_flair and current_flair["flair_text"]:
