@@ -62,10 +62,10 @@ class BNBot(object):
         """
         self.logger.debug("SUBJECT = " + str(subject))
         self.logger.debug("MATCH = " + str([message for message in self.reddit.get_unread(limit=None)
-            if re.match(subject, message.subject, re.IGNORECASE)]))
+            if re.match(re.escape(subject), message.subject, re.IGNORECASE)]))
         messages = [
             message for message in self.reddit.get_unread(limit=None)
-            if re.match(subject, message.subject, re.IGNORECASE)
+            if re.match(re.escape(subject), message.subject, re.IGNORECASE)
             ]
         if sum(1 for i in messages) != 0:
             return messages

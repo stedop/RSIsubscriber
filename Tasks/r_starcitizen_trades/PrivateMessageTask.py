@@ -9,9 +9,12 @@ MCP
 """
 
 from Bot.TasksManager import AbstractTaskType
-import datetime
+from datetime import datetime
 import urllib2
 import re
+from DataModels.TradebotModels import Trade, User
+from sqlalchemy import *
+from sqlalchemy.orm import sessionmaker, joinedload
 
 """
 Get private messages and update reddit user flair with RSI profile name.
@@ -121,7 +124,8 @@ class ShowHideFlairTask(AbstractTaskType):
 						remove_flair_names.append(message.author.name)
 
 			except Exception as e:
-				logger.exception("{}".format(datetime.utcnow()))
+				self.bot.logger.exception("{}".format(datetime.utcnow()))
+			finally:
 				message.mark_as_read()
 
 		self.bot.data.update({'updated': add_flair_names})
