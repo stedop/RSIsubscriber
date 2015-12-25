@@ -194,7 +194,12 @@ class UpdateTradeFlairTask(AbstractTaskType):
 		try:
 			flair_names = self.bot.data.get('flaired')
 			flair_updated = self.bot.data.get('updated')
-			unique_names = flair_names | set(flair_updated)
+			if flair_names and flair_updated:
+				unique_names = flair_names | set(flair_updated)
+			elif flair_names:
+				unique_names = flair_names
+			else:
+				unique_names = flair_updated
 
 			if unique_names:
 				sellers = self.bot.data_manager.query(Trade.seller_id.label("name")).filter(Trade.seller_id.in_(unique_names))
