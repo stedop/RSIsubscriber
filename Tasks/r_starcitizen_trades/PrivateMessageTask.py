@@ -35,7 +35,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 				current_flair = self.bot.get_flair(author)
 
 				# only set flair if author doesn't have existing flair
-				if current_flair and current_flair["flair_text"]:
+				if current_flair:
 					self.bot.logger.debug("** ERROR: [USERFLAIR]: duplicate flair request received from: {0}".format(message.author))
 					self.bot.reddit.send_message(message.author, "starcitizen_trades bot: problem with your flair request", "Sorry, it appears your flair was already set previously. If you have a problem with your existing flair then please [click here to message the mods](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades).")
 					return

@@ -147,14 +147,15 @@ class BNBot(object):
         self.reddit.delete_flair(self.config.get_value("reddit.subreddit"),  user_name)
 
     def get_flair(self, user_name):
-        """
-        Returns the current user flair.
-        :param user_name:
-        :return:
-        """
-        flair = self.reddit.get_flair(self.config.get_value("reddit.subreddit"), user_name)
-        flair_text = flair["flair_text"]
-        return flair_text
+		"""
+		Returns the current user flair.
+		:param user_name:
+		:return:
+		"""
+		flair = self.reddit.get_flair(self.config.get_value("reddit.subreddit"), user_name)
+		if flair:
+			return flair["flair_text"]
+		return None
 
     def is_mod(self, user_name):
         """
