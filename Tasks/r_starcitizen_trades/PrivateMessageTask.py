@@ -88,6 +88,7 @@ class ConfirmCitizenTask(AbstractTaskType):
 						user = Model.create_user(author, "RSI {0}, {1}".format(rsi_name, role))
 					else:
 						user.title = "RSI {0}, {1}".format(rsi_name, role)
+						user.update_dtm = datetime.utcnow()
 					
 					user.citizen_id = uee_number
 
@@ -171,56 +172,58 @@ class RemoveFlairTask(AbstractTaskType):
 	def handle(self, requirements):
 		messages = requirements['messages']
 
-		for message in messages:
-			try:
-				current_time = datetime.utcnow()
-				updated = []
-				prior_flair = []
-				redditor = message.author
-				flair = self.bot.get_flair(redditor.name)
-				if not flair:
-					self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removal request",  "No existing flair found. Please follow the directions [here](https://www.reddit.com/r/Starcitizen_trades/wiki/userconfirmation) to become verified.")
-					return
-				prior_flair.append(flair)
-				user = self.bot.data_manager.query(User).filter(User.user_id == redditor.name).first()
-				update_dtm = None
-				override = False
-				if not user:
-					user = Model.create_user(redditor.name, flair)
-					update_dtm = current_time
-					override = True
-				else:
-					# Update the current user
-					user.title = flair
-					update_dtm = user.update_dtm
-					#update_dtm = datetime.strptime(user.update_dtm,  "%Y-%m-%d %H:%M:%S")
-					user.update_dtm = current_time
-					
-				# Calculate if the required minimum time has passed.
-				diff = current_time - update_dtm
-				if diff > timedelta(30) or override:
-					# Create the audit record for the user.
-					user_audit = Model.create_user_audit(user)
+		try:
+			for message in messages:
+				try:
+					current_time = datetime.utcnow()
+					updated = []
+					prior_flair = []
+					redditor = message.author
+					flair = self.bot.get_flair(redditor.name)
+					if not flair:
+						self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removal request",  "No existing flair found. Please follow the directions [here](https://www.reddit.com/r/Starcitizen_trades/wiki/userconfirmation) to become verified.")
+						return
+					prior_flair.append(flair)
+					user = self.bot.data_manager.query(User).filter(User.user_id == redditor.name).first()
+					update_dtm = None
+					override = False
+					if not user:
+						user = Model.create_user(redditor.name, flair)
+						update_dtm = current_time
+						override = True
+					else:
+						# Update the current user
+						user.title = flair
+						update_dtm = user.update_dtm
+						#update_dtm = datetime.strptime(user.update_dtm,  "%Y-%m-%d %H:%M:%S")
+						user.update_dtm = current_time
+						
+					# Calculate if the required minimum time has passed.
+					diff = current_time - update_dtm
+					if diff > timedelta(30) or override:
+						# Create the audit record for the user.
+						user_audit = Model.create_user_audit(user)
 
-					self.bot.data_manager.add(user)
-					self.bot.data_manager.add(user_audit)
-					# Commit for now after every message - may need to change to group commit for performance
-					self.bot.data_manager.commit()
+						self.bot.data_manager.add(user)
+						self.bot.data_manager.add(user_audit)
+						# Commit for now after every message - may need to change to group commit for performance
+						self.bot.data_manager.commit()
 
-					self.bot.delete_flair(redditor.name)
-					self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removed", "Congratulations, your flair has been reset. To find out how to add back any confirmed trades, please [click here](https://www.reddit.com/r/Starcitizen_trades/wiki/tradebot#wiki_commands).")
-					updated.append(redditor.name)
-					self.bot.data.update({'flair_removed': updated})
-					self.bot.data.update({'old_flair': prior_flair})
-				else:
-					self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removal request",  "Your flair has been updated within the past 30 days. Please [click here](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades) to message the mods with your request.")
+						self.bot.delete_flair(redditor.name)
+						self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removed", "Congratulations, your flair has been reset. To find out how to add back any confirmed trades, please [click here](https://www.reddit.com/r/Starcitizen_trades/wiki/tradebot#wiki_commands).")
+						updated.append(redditor.name)
+						self.bot.data.update({'flair_removed': updated})
+						self.bot.data.update({'old_flair': prior_flair})
+					else:
+						self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removal request",  "Your flair has been updated within the past 30 days. Please [click here](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades) to message the mods with your request.")
 
-			except Exception as e:
-				self.bot.logger.exception("{}".format(datetime.utcnow()))
-				self.bot.data_manager.rollback()
-			finally:
-				self.bot.data_manager.close()
-				message.mark_as_read()
+				except Exception as e:
+					self.bot.logger.exception("{}".format(datetime.utcnow()))
+					self.bot.data_manager.rollback()
+				finally:
+					message.mark_as_read()
+		finally:
+			self.bot.data_manager.close()
 
 	def requirements(self):
 		messages = self.bot.match_unread('flair remove')
