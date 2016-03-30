@@ -5,7 +5,8 @@ import logging
 import datetime
 from Bot.TheBot import BNBot
 from Bot.TasksManager import TaskManager
-from Tasks.r_starcitizen_trades.PrivateMessageTask import ConfirmCitizenTask
+from Tasks.r_starcitizen_trades.PrivateMessageTask import ConfirmCitizenTask, RemoveFlairTask
+from Tasks.r_starcitizen_trades.WikiTask import RemovedFlairWikiTask
 import os
 
 
@@ -29,7 +30,7 @@ bot_logger = logging.getLogger('Flairbot')
 
 """ Main """
 try:
-    tasks = [ConfirmCitizenTask]
+    tasks = [ConfirmCitizenTask, RemoveFlairTask, RemovedFlairWikiTask]
     bot = BNBot(BASEDIR, 'flairbot_config.ini', bot_logger)
     task_manager = TaskManager(tasks, bot)
     task_manager.run()

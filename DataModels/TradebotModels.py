@@ -12,6 +12,7 @@ class User(Base):
 	user_id = Column(String(13), primary_key = True)
 	title = Column(String(50))
 	flair_ind = Column(String(1))
+	citizen_id = Column(Numeric(precision = 10,  scale = 0))
 	update_dtm = Column(DateTime, default = datetime.datetime.utcnow().strftime(TIME_FORMAT))
 
 	sales = relationship("Trade", foreign_keys = "Trade.seller_id", order_by = "desc(Trade.update_dtm)")
@@ -19,6 +20,14 @@ class User(Base):
 
 	def __eq__(self, other):
 		return self.user_id == other.user_id
+
+class UserAudit(Base):
+	__tablename__ = 'user_audit'
+	user_id = Column(String(13), primary_key = True)
+	title = Column(String(50))
+	flair_ind = Column(String(1))
+	citizen_id = Column(Numeric(precision = 10,  scale = 0))
+	update_dtm = Column(DateTime, default = datetime.datetime.utcnow().strftime(TIME_FORMAT), primary_key = True)
 
 class Trade(Base):
 	__tablename__ = 'trade'

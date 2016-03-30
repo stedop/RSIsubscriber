@@ -15,6 +15,7 @@ import praw
 from string import maketrans
 import time
 from DataModels.TradebotModels import Trade, User
+from Utils.Model import Model
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker, joinedload
 
@@ -151,7 +152,8 @@ class SaveDataTask(AbstractTaskType):
 			for name in redditors:
 				result = self.bot.data_manager.query(exists().where(User.user_id == name)).scalar()
 				if not result:
-					user = self.populate_user(name)
+					flair = self.bot.get_flair(name)
+					user = Model.create_user(name, flair)
 					self.bot.data_manager.add(user)
 
 			trades = self.bot.data.get('trades')
@@ -172,18 +174,6 @@ class SaveDataTask(AbstractTaskType):
 
 	def requirements(self):
 		return True
-
-	"""
-	Returns a new User object with the class variables populated.
-	"""
-	def populate_user(self, name):
-		user = User()
-		user.user_id = name
-		flair = self.bot.get_flair(name)
-		user.title = flair
-		user.flair_ind = "1"
-
-		return user
 
 """
 Updates user flair with the number of confirmed trades.

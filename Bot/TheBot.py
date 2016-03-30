@@ -11,8 +11,7 @@ from Bot import MessageNotFoundException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, session
 from praw.handlers import MultiprocessHandler
-from DataModels import MessagesModel
-from DataModels import FlairModel
+from DataModels import MessagesModel, FlairModel
 from mako.template import Template
 import praw
 import logging
@@ -138,6 +137,14 @@ class BNBot(object):
                 self.reddit.set_flair(self.config.get_value("reddit.subreddit"), user_name, flair)
 
         return True
+    
+    def delete_flair(self, user_name):
+        """
+        Deletes the user's current flair.
+        :param user_name:
+        :return:
+        """
+        self.reddit.delete_flair(self.config.get_value("reddit.subreddit"),  user_name)
 
     def get_flair(self, user_name):
         """
@@ -170,22 +177,21 @@ class BNBot(object):
             self.mod_list.append(mod.name)
 
     def __setup_data_manager(self):
-        """
-        Sets up the data_manager
-
+		"""
+		Sets up the data_manager
         :return:
-        """
-        session = sessionmaker()
-        self.__db_engine = create_engine(
-            "mysql+mysqldb://{user}:{password}@{host}/{db_name}".format(
-                user=self.config.get_value("database.user"),
-                password=self.config.get_value("database.pass"),
-                host=self.config.get_value("database.host"),
-                db_name=self.config.get_value("database.name")
-            ),
-            encoding='utf8'
-        )
-        self.data_manager = session(bind=self.__db_engine)
+		"""
+		session = sessionmaker()
+		self.__db_engine = create_engine(
+			"mysql+mysqldb://{user}:{password}@{host}/{db_name}".format(
+				user=self.config.get_value("database.user"),
+				password=self.config.get_value("database.pass"),
+				host=self.config.get_value("database.host"),
+				db_name=self.config.get_value("database.name")
+			),
+			encoding='utf8'
+		)
+		self.data_manager = session(bind=self.__db_engine)
 
     def __setup_reddit_conn(self):
         """
