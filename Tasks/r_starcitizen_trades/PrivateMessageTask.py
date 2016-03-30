@@ -188,12 +188,12 @@ class RemoveFlairTask(AbstractTaskType):
 					update_dtm = None
 					override = False
 					if not user:
-						user = Model.create_user(redditor.name, flair)
+						user = Model.create_user(redditor.name, "")
 						update_dtm = current_time
 						override = True
 					else:
 						# Update the current user
-						user.title = flair
+						user.title = ""
 						update_dtm = user.update_dtm
 						#update_dtm = datetime.strptime(user.update_dtm,  "%Y-%m-%d %H:%M:%S")
 						user.update_dtm = current_time
