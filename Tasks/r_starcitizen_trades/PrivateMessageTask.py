@@ -69,6 +69,15 @@ class ConfirmCitizenTask(AbstractTaskType):
 				parser = SubHTMLParser()
 				parser.feed(rsi_page_content)
 				uee_number = parser.citizen_number
+				
+				associated_aliases = self.bot.data_manager.query(User).filter(User.citizen_id == uee_number).all()
+				if len(associated_aliases) > 0:
+					redditor_names = ""
+					for alias in associated_aliases:
+						redditor_names += "/u/" + alias.user_id + ", flair: " + alias.title + "\n\n"
+					
+					self.bot.reddit.send_message("/r/starcitizen_trades",  "Alert: Previous Citizen UEE Number registered",  "/u/" + author + " registered with Citizen ID: " + \
+					                             uee_number + ". This has previously been associated to the following redditor[s]:\n\n" + redditor_names)
 
 				if reddit_user_match:
 					# Look for a request to be flagged as a Broker, otherwise default to Trader
