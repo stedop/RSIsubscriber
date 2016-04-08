@@ -192,6 +192,10 @@ class RemoveFlairTask(AbstractTaskType):
 					if not flair:
 						self.bot.reddit.send_message(redditor, "starcitizen_trades bot: flair removal request",  "No existing flair found. Please follow the directions [here](https://www.reddit.com/r/Starcitizen_trades/wiki/userconfirmation) to become verified.")
 						return
+					else:
+						if len(flair) < 4 or flair[0:3] != "RSI":
+							self.bot.reddit.send_message(redditor,  "starcitizen_trades bot: flair removal request",  "Unable to remove your flair. Please [contact the mods](http://www.reddit.com/message/compose?to=%2Fr%2FStarcitizen_trades) for help with removing your flair.")
+							return
 					prior_flair.append(flair)
 					user = self.bot.data_manager.query(User).filter(User.user_id == redditor.name).first()
 					update_dtm = None
