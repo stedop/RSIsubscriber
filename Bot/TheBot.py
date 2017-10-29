@@ -10,7 +10,7 @@ from Bot import ConfigManager
 from Bot import MessageNotFoundException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, session
-from praw.handlers import MultiprocessHandler
+#from praw.handlers import MultiprocessHandler
 from DataModels import MessagesModel, FlairModel
 from mako.template import Template
 import praw
@@ -60,10 +60,10 @@ class BNBot(object):
         :return:
         """
         self.logger.debug("SUBJECT = " + str(subject))
-        self.logger.debug("MATCH = " + str([message for message in self.reddit.get_unread(limit=None)
-            if re.match(re.escape(subject), message.subject, re.IGNORECASE)]))
+        #self.logger.debug("MATCH = " + str([message for message in self.reddit.inbox.unread(limit=None)
+        #    if re.match(re.escape(subject), message.subject, re.IGNORECASE)]))
         messages = [
-            message for message in self.reddit.get_unread(limit=None)
+            message for message in self.reddit.inbox.unread(limit=None)
             if re.match(re.escape(subject), message.subject, re.IGNORECASE)
             ]
         if sum(1 for i in messages) != 0:
@@ -152,9 +152,9 @@ class BNBot(object):
 		:param user_name:
 		:return:
 		"""
-		flair = self.reddit.get_flair(self.config.get_value("reddit.subreddit"), user_name)
+		flair = self.reddit.subreddit(self.config.get_value("reddit.subreddit")).flair(user_name)
 		if flair:
-			return flair["flair_text"]
+			return next(flair)
 		return None
 
     def is_mod(self, user_name):
@@ -174,7 +174,7 @@ class BNBot(object):
 
         :return:
         """
-        for mod in self.reddit.get_subreddit(self.config.get_value("reddit.subreddit")).get_moderators():
+        for mod in self.reddit.subreddit(self.config.get_value("reddit.subreddit")).moderator():
             self.mod_list.append(mod.name)
 
     def __setup_data_manager(self):
@@ -201,13 +201,11 @@ class BNBot(object):
         :return:
         """
         user_agent = (self.config.get_value("reddit.bot_name"))
-        handle = MultiprocessHandler('127.0.0.1', 65000)
-        self.reddit = praw.Reddit(
+        #handle = MultiprocessHandler('127.0.0.1', 65000)
+        self.reddit = praw.Reddit(site_name=self.config.get_value('reddit.site_name'),
             user_agent=user_agent,
-            log_requests=self.config.get_value('reddit.log_requests'),
-            handle=handle,
-            site_name=self.config.get_value('reddit.site_name')
+            log_requests=self.config.get_value('reddit.log_requests')
         )
 
-        if not self.reddit.refresh_access_information(update_session=True):
-            raise RuntimeError
+        #if not self.reddit.refresh_access_information(update_session=True):
+        #    raise RuntimeError
